@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/taostat/ts-sdk/compare/v1.0.1...v1.0.2) (2025-07-04)
+
+
+### Bug Fixes
+
+* release-please.yml ([d0c10c0](https://github.com/taostat/ts-sdk/commit/d0c10c0b4d942ce936411bc58a84f9ece60b8a43))
+
 ## [1.0.1](https://github.com/taostat/ts-sdk/compare/v1.0.0...v1.0.1) (2025-07-04)
 
 
