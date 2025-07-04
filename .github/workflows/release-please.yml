@@ -32,11 +32,11 @@ jobs:
 
       - name: Install dependencies
         if: ${{ steps.release.outputs.release_created }}
-        run: npm ci
+        run: pnpm install
 
       - name: Build
         if: ${{ steps.release.outputs.release_created }}
-        run: npm run build
+        run: pnpm run build
 
       - name: Publish to npm
         if: ${{ steps.release.outputs.release_created }}
