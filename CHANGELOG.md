@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/taostat/ts-sdk/compare/v1.0.3...v1.0.4) (2025-07-04)
+
+
+### Bug Fixes
+
+* add --no-git-checks flag to pnpm publish command ([244f8ad](https://github.com/taostat/ts-sdk/commit/244f8adc5e92af7ba5154139076ff4bf3ada22cc))
+
 ## [1.0.3](https://github.com/taostat/ts-sdk/compare/v1.0.2...v1.0.3) (2025-07-04)
 
 
