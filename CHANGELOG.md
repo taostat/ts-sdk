@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/taostat/ts-sdk/compare/v1.0.2...v1.0.3) (2025-07-04)
+
+
+### Bug Fixes
+
+* update GitHub workflow and package.json for proper pnpm support ([1b27659](https://github.com/taostat/ts-sdk/commit/1b27659d53b38fba8dd7abd41f1d1df0af019e3f))
+
 ## [1.0.2](https://github.com/taostat/ts-sdk/compare/v1.0.1...v1.0.2) (2025-07-04)
 
 
