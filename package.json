@@ -21,10 +21,10 @@
     "example": "ts-node examples/basic-usage.ts",
     "example:modular": "ts-node examples/modular-usage.ts",
     "example:compiled": "npm run build && node dist/examples/basic-usage.js",
-    "release": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk",
-    "release:dry": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --dry-run",
-    "release:preview": "release-please github-release --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --dry-run",
-    "prepare": "pnpm run build"
+    "release:dry": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --dry-run",
+    "release:patch": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --release-as=patch",
+    "release:minor": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --release-as=minor",
+    "prepare": "npm run build"
   },
   "keywords": [
     "taostats",

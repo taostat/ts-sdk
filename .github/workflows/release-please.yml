@@ -3,6 +3,13 @@ name: Release Please
 on:
   push:
     branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      release-as:
+        description: 'Release as (patch, minor, major, or specific version like 1.0.1)'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -17,7 +24,6 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           release-type: node
-          package-name: '@taostats/sdk'
 
       # Build and publish only when a release is created
       - uses: actions/checkout@v4
@@ -30,16 +36,22 @@ jobs:
           node-version: '22.3.0'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Setup pnpm
+        if: ${{ steps.release.outputs.release_created }}
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
       - name: Install dependencies
         if: ${{ steps.release.outputs.release_created }}
-        run: npm install
+        run: pnpm install
 
       - name: Build
         if: ${{ steps.release.outputs.release_created }}
-        run: npm run build
+        run: pnpm run build
 
       - name: Publish to npm
         if: ${{ steps.release.outputs.release_created }}
-        run: npm publish --access public
+        run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
