@@ -1,4 +1,4 @@
-# TaoStats SDK
+# Taostats SDK
 
 Taostats SDK for Bittensor.
 
@@ -21,6 +21,7 @@ pnpm add @taostats/sdk
 ## Usage
 
 ### Full API Access (requires API key)
+[Get your Taostats API key here](https://docs.taostats.io/docs/the-taostats-api)
 
 ```typescript
 import { TaoStatsClient } from '@taostats/sdk';
@@ -189,9 +190,12 @@ The SDK is organized into modules for better code organization and maintainabili
 - **`client.stake`** - Staking operations to validators and subnets
 - **`client.transfer`** - TAO and Alpha token transfers via blockchain
 - **`client.unstake`** - Unstaking operations from validators and subnets
-- **`client.utils`** - Utility functions for validation, conversion, and fee estimation
 
 Each module contains:
 - **Typed interfaces** for all request/response data
 - **Comprehensive methods** for the respective API endpoints
 - **Full TypeScript support** with intellisense and type checking
+
+## Awesome Taostats
+
+Want to see what people are building with Taostats? Want to share your product? [Awesome Taostats](https://github.com/taostat/awesome-taostats) is a listing of products built with our API.

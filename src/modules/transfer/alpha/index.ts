@@ -1,0 +1,1 @@
+export { transferAlpha } from './alpha';
