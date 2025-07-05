@@ -6,6 +6,7 @@ import {
   InvalidSubnetError,
   InvalidHotkeyError,
 } from './errors';
+import { AlphaTransferParams } from '../modules/transfer/types';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -16,7 +17,7 @@ export interface ValidationResult {
 export interface BalanceInfo {
   free: string;
   reserved: string;
-  frozen: string;
+  total: string;
 }
 
 /**
@@ -149,7 +150,6 @@ export function checkSufficientBalance(
   balance: BalanceInfo,
   amount: string,
   estimatedFee: string,
-  accountAddress: string,
   operation: string = 'operation'
 ): ValidationResult {
   try {
@@ -241,6 +241,82 @@ export function validateBlockchainParams(params: {
       subnetCheck: true
     }
   };
+}
+
+/**
+ * Validates all transfer parameters
+ */
+export function validateTaoTransferParams(
+  to: string,
+  amount: string,
+  from?: string
+): ValidationResult {
+
+  // Validate destination address
+  if (!validateAddress(to)) {
+    throw new InvalidAddressError(to, 'Invalid destination address format');
+  }
+
+  // Validate source address if provided
+  if (from && !validateAddress(from)) {
+    throw new InvalidAddressError(from, 'Invalid source address format');
+  }
+
+  // Validate amount
+  const amountValidation = validateAmount(amount);
+  if (!amountValidation.isValid) {
+    throw new InvalidAmountError(amount, amountValidation.error);
+  }
+
+  return {
+    isValid: true,
+    details: {
+      addressCheck: true,
+      amountCheck: true
+    }
+  };
+}
+
+/**
+ * Validates Alpha transfer parameters
+ */
+export function validateAlphaTransferParams(params: AlphaTransferParams): void {
+  // Validate destination address
+  if (!validateAddress(params.to_address)) {
+    throw new Error(`Invalid destination address: ${params.to_address}`);
+  }
+
+  // Validate source address if provided
+  if (params.from_address && !validateAddress(params.from_address)) {
+    throw new Error(`Invalid source address: ${params.from_address}`);
+  }
+
+  // Validate hotkey address
+  if (!validateAddress(params.from_hotkey)) {
+    throw new Error(`Invalid hotkey address: ${params.from_hotkey}`);
+  }
+
+  // Validate amount
+  const amountValidation = validateAmount(params.amount);
+  if (!amountValidation.isValid) {
+    throw new Error(`Invalid amount: ${amountValidation.error}`);
+  }
+
+  // Validate subnet IDs
+  if (!Number.isInteger(params.from_subnet) || params.from_subnet < 0) {
+    throw new Error(`Invalid origin subnet ID: ${params.from_subnet}`);
+  }
+
+  if (!Number.isInteger(params.to_subnet) || params.to_subnet < 0) {
+    throw new Error(`Invalid destination subnet ID: ${params.to_subnet}`);
+  }
+
+  // Validate slippage if provided
+  if (params.maxSlippage !== undefined) {
+    if (typeof params.maxSlippage !== 'number' || params.maxSlippage < 0 || params.maxSlippage > 100) {
+      throw new Error(`Invalid max slippage: ${params.maxSlippage}. Must be between 0 and 100`);
+    }
+  }
 }
 
 /**
