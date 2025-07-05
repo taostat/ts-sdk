@@ -7,7 +7,7 @@ import { TaoPricesModule } from '../modules/tao-prices';
 import { TradingViewModule } from '../modules/trading-view';
 import { DelegationsModule } from '../modules/delegations';
 import { AccountsModule } from '../modules/accounts';
-// import { TransferModule } from '../modules/transfer';
+import { TransferModule } from '../modules/transfer';
 import { StakeModule } from '../modules/stake';
 import { UnstakeModule } from '../modules/unstake';
 import { MoveModule } from '../modules/move';
@@ -27,7 +27,7 @@ export class TaoStatsClient {
   public readonly tradingView: TradingViewModule;
   public readonly delegations: DelegationsModule;
   public readonly accounts: AccountsModule;
-  // public readonly transfer: TransferModule;
+  public readonly transfer: TransferModule;
   public readonly stake: StakeModule;
   public readonly unstake: UnstakeModule;
   public readonly move: MoveModule;
@@ -46,7 +46,7 @@ export class TaoStatsClient {
     this.tradingView = new TradingViewModule(this.httpClient);
     this.delegations = new DelegationsModule(this.httpClient);
     this.accounts = new AccountsModule(this.httpClient);
-    // this.transfer = new TransferModule(this.httpClient);
+    this.transfer = new TransferModule(this.httpClient);
     this.stake = new StakeModule(this.httpClient);
     this.unstake = new UnstakeModule(this.httpClient);
     this.move = new MoveModule(this.httpClient);

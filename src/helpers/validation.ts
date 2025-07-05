@@ -6,6 +6,7 @@ import {
   InvalidSubnetError,
   InvalidHotkeyError,
 } from './errors';
+import { AlphaTransferParams } from '../modules/transfer/types';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -16,7 +17,7 @@ export interface ValidationResult {
 export interface BalanceInfo {
   free: string;
   reserved: string;
-  frozen: string;
+  total: string;
 }
 
 /**
@@ -250,10 +251,6 @@ export function validateTaoTransferParams(
   amount: string,
   from?: string
 ): ValidationResult {
-  console.log('Validating transfer parameters...');
-  console.log(`  To: ${to}`);
-  console.log(`  Amount: ${amount} TAO`);
-  console.log(`  From: ${from || 'environment account'}`);
 
   // Validate destination address
   if (!validateAddress(to)) {
@@ -271,8 +268,6 @@ export function validateTaoTransferParams(
     throw new InvalidAmountError(amount, amountValidation.error);
   }
 
-  console.log('✓ All transfer parameters are valid');
-
   return {
     isValid: true,
     details: {
@@ -280,6 +275,48 @@ export function validateTaoTransferParams(
       amountCheck: true
     }
   };
+}
+
+/**
+ * Validates Alpha transfer parameters
+ */
+export function validateAlphaTransferParams(params: AlphaTransferParams): void {
+  // Validate destination address
+  if (!validateAddress(params.to_address)) {
+    throw new Error(`Invalid destination address: ${params.to_address}`);
+  }
+
+  // Validate source address if provided
+  if (params.from_address && !validateAddress(params.from_address)) {
+    throw new Error(`Invalid source address: ${params.from_address}`);
+  }
+
+  // Validate hotkey address
+  if (!validateAddress(params.from_hotkey)) {
+    throw new Error(`Invalid hotkey address: ${params.from_hotkey}`);
+  }
+
+  // Validate amount
+  const amountValidation = validateAmount(params.amount);
+  if (!amountValidation.isValid) {
+    throw new Error(`Invalid amount: ${amountValidation.error}`);
+  }
+
+  // Validate subnet IDs
+  if (!Number.isInteger(params.from_subnet) || params.from_subnet < 0) {
+    throw new Error(`Invalid origin subnet ID: ${params.from_subnet}`);
+  }
+
+  if (!Number.isInteger(params.to_subnet) || params.to_subnet < 0) {
+    throw new Error(`Invalid destination subnet ID: ${params.to_subnet}`);
+  }
+
+  // Validate slippage if provided
+  if (params.maxSlippage !== undefined) {
+    if (typeof params.maxSlippage !== 'number' || params.maxSlippage < 0 || params.maxSlippage > 100) {
+      throw new Error(`Invalid max slippage: ${params.maxSlippage}. Must be between 0 and 100`);
+    }
+  }
 }
 
 /**

@@ -1,5 +1,6 @@
 import { getPoolPrices } from './get-pool-prices';
 import BigNumber from './bignumber';
+import { AlphaTransferParams, SlippageInfo } from '../../modules/transfer/types';
 
 export interface StakingSlippageInfo {
   slippagePercentage: number;
@@ -253,4 +254,93 @@ export function getAlphaFromTaoForSlippageCalc(
   const alphaOut = alphaPool.minus(newAlphaReserves);
 
   return alphaOut.toString();
+}
+
+/**
+ * Calculates slippage for Alpha transfer using real on-chain pool data only
+ */
+export async function calculateAlphaTransferSlippage(
+  params: AlphaTransferParams,
+  stakeFee: string,
+): Promise<SlippageInfo> {
+  try {
+    const transferAmount = new BigNumber(params.amount);
+
+    if (params.from_subnet === params.to_subnet) {
+      // Same subnet transfer - minimal slippage (mainly transaction fees)
+      const receivedAmount = transferAmount.toString();
+
+      return {
+        slippagePercentage: 0.01, // Minimal slippage for same-subnet
+        receivedAmount,
+        idealAmount: params.amount,
+        poolData: {
+          originPool: null,
+          destinationPool: null
+        }
+      };
+    }
+
+    // Cross-subnet transfer - get real pool data
+    const poolPricesMap = await getPoolPrices();
+
+    const originPool = poolPricesMap.get(params.from_subnet);
+    const destinationPool = poolPricesMap.get(params.to_subnet);
+
+    if (!originPool || !destinationPool) {
+      throw new Error(`Pool data not available for subnets ${params.from_subnet} or ${params.to_subnet}`);
+    }
+
+    // Step 1: Convert Alpha to TAO in origin subnet (using base reserves only, matching Python CLI)
+    const originAlphaReserves = originPool.alpha;
+    const originTaoReserves = originPool.tao;
+
+    const taoFromAlpha = getTaoFromAlphaForSlippageCalc(
+      transferAmount.toString(),
+      originAlphaReserves.toString(),
+      originTaoReserves.toString()
+    );
+
+    console.log(`Alpha ${params.amount} -> TAO ${taoFromAlpha} in origin subnet`);
+
+    // Step 2: Subtract stake fee
+    const taoAfterFee = new BigNumber(taoFromAlpha).minus(stakeFee);
+
+    if (taoAfterFee.isLessThanOrEqualTo(0)) {
+      throw new Error(`Transfer amount too small - fee ${stakeFee} TAO exceeds converted amount ${taoFromAlpha} TAO`);
+    }
+
+    console.log(`TAO after fee: ${taoAfterFee.toString()}`);
+
+    // Step 3: Convert TAO to Alpha in destination subnet (using base reserves only, matching Python CLI)
+    const destTaoReserves = destinationPool.tao;
+    const destAlphaReserves = destinationPool.alpha;
+
+    const finalAlpha = getAlphaFromTaoForSlippageCalc(
+      taoAfterFee.toString(),
+      destTaoReserves.toString(),
+      destAlphaReserves.toString()
+    );
+
+    // Step 4: Calculate slippage
+    const receivedAmount = new BigNumber(finalAlpha);
+    const idealAmount = transferAmount; // What we'd get with no slippage
+
+    const slippage = idealAmount.minus(receivedAmount).dividedBy(idealAmount).multipliedBy(100);
+    const slippagePercentage = Math.max(0, slippage.toNumber()); // Ensure non-negative
+
+    return {
+      slippagePercentage,
+      receivedAmount: receivedAmount.toString(),
+      idealAmount: params.amount,
+      poolData: {
+        originPool,
+        destinationPool
+      }
+    };
+
+  } catch (error) {
+    console.error('Error calculating slippage:', error);
+    throw new Error(`Failed to calculate slippage: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }
