@@ -149,7 +149,6 @@ export function checkSufficientBalance(
   balance: BalanceInfo,
   amount: string,
   estimatedFee: string,
-  accountAddress: string,
   operation: string = 'operation'
 ): ValidationResult {
   try {
@@ -239,6 +238,46 @@ export function validateBlockchainParams(params: {
       amountCheck: true,
       hotkeyCheck: true,
       subnetCheck: true
+    }
+  };
+}
+
+/**
+ * Validates all transfer parameters
+ */
+export function validateTaoTransferParams(
+  to: string,
+  amount: string,
+  from?: string
+): ValidationResult {
+  console.log('Validating transfer parameters...');
+  console.log(`  To: ${to}`);
+  console.log(`  Amount: ${amount} TAO`);
+  console.log(`  From: ${from || 'environment account'}`);
+
+  // Validate destination address
+  if (!validateAddress(to)) {
+    throw new InvalidAddressError(to, 'Invalid destination address format');
+  }
+
+  // Validate source address if provided
+  if (from && !validateAddress(from)) {
+    throw new InvalidAddressError(from, 'Invalid source address format');
+  }
+
+  // Validate amount
+  const amountValidation = validateAmount(amount);
+  if (!amountValidation.isValid) {
+    throw new InvalidAmountError(amount, amountValidation.error);
+  }
+
+  console.log('✓ All transfer parameters are valid');
+
+  return {
+    isValid: true,
+    details: {
+      addressCheck: true,
+      amountCheck: true
     }
   };
 }

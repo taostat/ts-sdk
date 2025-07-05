@@ -53,7 +53,7 @@ export async function calculateStakeSlippage(
       alphaReserves.toString()
     );
 
-    console.log(`TAO ${taoAfterFee.toString()} -> Alpha ${receivedAlpha} in subnet ${netuid}`);
+    console.log(`${taoAfterFee.toString()} TAO -> Alpha ${receivedAlpha} in subnet ${netuid}`);
 
     // Calculate slippage vs ideal 1:1 conversion
     const idealAlpha = new BigNumber(taoAmount);
@@ -61,6 +61,8 @@ export async function calculateStakeSlippage(
 
     const slippage = idealAlpha.minus(actualAlpha).dividedBy(idealAlpha).multipliedBy(100);
     const slippagePercentage = Math.max(0, slippage.toNumber());
+
+    console.log(`Price: ${subnetPool.price.toString()} TAO per Alpha`);
 
     return {
       slippagePercentage,
@@ -128,13 +130,7 @@ export async function calculateUnstakeSlippage(
       throw new Error(`Unstake amount too small - fee ${unstakeFee} TAO exceeds converted amount ${receivedTao} TAO`);
     }
 
-    console.log(`Subnet price: ${subnetPool.price.toString()} TAO per Alpha`);
-    console.log(`Ideal TAO (at subnet price): ${idealTaoAmount.toString()}`);
-    console.log(`Actual TAO (AMM): ${actualTaoAmount.toString()}`);
-    console.log(`Actual TAO after fee: ${taoAfterFee.toString()}`);
-    console.log(`Total slippage: ${totalSlippage.toString()} TAO`);
-    console.log(`Unstake slippage: ${slippagePercentage.toFixed(4)}%`);
-    console.log(`Expected to receive: ${taoAfterFee.toString()} TAO`);
+    console.log(`Price: ${subnetPool.price.toString()} TAO per Alpha`);
 
     return {
       slippagePercentage,
