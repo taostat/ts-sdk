@@ -14,7 +14,7 @@ export * from './modules/accounts';
 // export * from './modules/transfer';
 export * from './modules/stake';
 export * from './modules/unstake';
-// export * from './modules/move';
+export * from './modules/move';
 // export * from './modules/utils';
 export * from './modules/chain';
 export * from './modules/live';

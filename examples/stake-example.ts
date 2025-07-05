@@ -49,10 +49,10 @@ async function main() {
     // console.log(`Transaction hash: ${alphaStakeResult.txHash}\n`);
 
 
-    console.log('✅ Stake module example completed successfully!');
+    console.log('Stake module example completed successfully!');
 
   } catch (error) {
-    console.error('❌ Error in stake example:', error);
+    console.error('Error in stake example:', error);
 
     if (error instanceof Error) {
       console.error('Error message:', error.message);

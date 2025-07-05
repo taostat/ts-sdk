@@ -48,10 +48,10 @@ async function main() {
     // console.log('Alpha unstake result:', alphaUnstakeResult);
     // console.log(`Transaction hash: ${alphaUnstakeResult.txHash}\n`);
 
-    console.log('✅ Unstake module example completed successfully!');
+    console.log('Unstake module example completed successfully!');
 
   } catch (error) {
-    console.error('❌ Error in unstake example:', error);
+    console.error('Error in unstake example:', error);
 
     if (error instanceof Error) {
       console.error('Error message:', error.message);

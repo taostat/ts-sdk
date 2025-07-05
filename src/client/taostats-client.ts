@@ -10,7 +10,7 @@ import { AccountsModule } from '../modules/accounts';
 // import { TransferModule } from '../modules/transfer';
 import { StakeModule } from '../modules/stake';
 import { UnstakeModule } from '../modules/unstake';
-// import { MoveModule } from '../modules/move';
+import { MoveModule } from '../modules/move';
 // import { UtilsModule } from '../modules/utils';
 import { ChainModule } from '../modules/chain';
 import { LiveModule } from '../modules/live';
@@ -30,7 +30,7 @@ export class TaoStatsClient {
   // public readonly transfer: TransferModule;
   public readonly stake: StakeModule;
   public readonly unstake: UnstakeModule;
-  // public readonly move: MoveModule;
+  public readonly move: MoveModule;
   // public readonly utils: UtilsModule;
   public readonly chain: ChainModule;
   public readonly live: LiveModule;
@@ -49,7 +49,7 @@ export class TaoStatsClient {
     // this.transfer = new TransferModule(this.httpClient);
     this.stake = new StakeModule(this.httpClient);
     this.unstake = new UnstakeModule(this.httpClient);
-    // this.move = new MoveModule(this.httpClient);
+    this.move = new MoveModule(this.httpClient);
     // this.utils = new UtilsModule(this.httpClient);
     this.chain = new ChainModule(this.httpClient);
     this.live = new LiveModule(this.httpClient);
