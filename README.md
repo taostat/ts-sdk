@@ -190,7 +190,6 @@ The SDK is organized into modules for better code organization and maintainabili
 - **`client.stake`** - Staking operations to validators and subnets
 - **`client.transfer`** - TAO and Alpha token transfers via blockchain
 - **`client.unstake`** - Unstaking operations from validators and subnets
-- **`client.utils`** - Utility functions for validation, conversion, and fee estimation
 
 Each module contains:
 - **Typed interfaces** for all request/response data
