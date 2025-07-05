@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/taostat/ts-sdk/compare/v1.0.4...v1.1.0) (2025-07-05)
+
+
+### Features
+
+* add blockchain modules ([#12](https://github.com/taostat/ts-sdk/issues/12)) ([f0ea856](https://github.com/taostat/ts-sdk/commit/f0ea85687575fedb4fcf52e8deae72d34b615174))
+
 ## [1.0.4](https://github.com/taostat/ts-sdk/compare/v1.0.3...v1.0.4) (2025-07-04)
 
 
