@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/taostat/ts-sdk/compare/v1.1.0...v1.1.1) (2025-07-07)
+
+
+### Bug Fixes
+
+* update package.json  ([#15](https://github.com/taostat/ts-sdk/issues/15)) ([47483e3](https://github.com/taostat/ts-sdk/commit/47483e36450cf52cd279fac988508c86bffa4526))
+* update package.json ([#16](https://github.com/taostat/ts-sdk/issues/16)) ([135d01e](https://github.com/taostat/ts-sdk/commit/135d01e700d84493ae1bf4969bd5ddee7a5832cf))
+
 ## [1.1.0](https://github.com/taostat/ts-sdk/compare/v1.0.4...v1.1.0) (2025-07-05)
 
 
