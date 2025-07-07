@@ -15,7 +15,7 @@ export class HttpClient {
       effectiveRpcUrl = DEFAULT_RPC_URL.replace('{API_KEY}', config.apiKey);
     } else if (config.rpcUrl) {
       effectiveRpcUrl = config.rpcUrl;
-    } else if (process.env.RPC_URL) {
+    } else if (typeof process !== 'undefined' && process.env?.RPC_URL) {
       effectiveRpcUrl = process.env.RPC_URL;
     }
 
@@ -25,8 +25,8 @@ export class HttpClient {
       retries: DEFAULT_RETRIES,
       ...config,
       rpcUrl: effectiveRpcUrl,
-      seed: config.seed || process.env.TAO_ACCOUNT_SEED,
-      privateKey: config.privateKey || process.env.TAO_ACCOUNT_PRIVATE_KEY
+      seed: config.seed || (typeof process !== 'undefined' && process.env?.TAO_ACCOUNT_SEED || ''),
+      privateKey: config.privateKey || (typeof process !== 'undefined' && process.env?.TAO_ACCOUNT_PRIVATE_KEY || '')
     };
 
     this.client = axios.create({

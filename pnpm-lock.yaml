@@ -8,6 +8,9 @@ dependencies:
   '@polkadot/api':
     specifier: ^15.10.2
     version: 15.10.2
+  '@polkadot/util':
+    specifier: ^13.5.3
+    version: 13.5.3
   '@polkadot/util-crypto':
     specifier: ^13.5.1
     version: 13.5.3(@polkadot/util@13.5.3)
@@ -17,9 +20,6 @@ dependencies:
   bignumber.js:
     specifier: ^9.3.0
     version: 9.3.0
-  dotenv:
-    specifier: ^16.3.1
-    version: 16.6.1
 
 devDependencies:
   '@polkadot/types':
@@ -37,6 +37,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^6.7.2
     version: 6.21.0(eslint@8.57.1)(typescript@5.8.3)
+  dotenv:
+    specifier: ^16.3.1
+    version: 16.6.1
   eslint:
     specifier: ^8.49.0
     version: 8.57.1
@@ -2274,7 +2277,7 @@ packages:
   /dotenv@16.6.1:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
-    dev: false
+    dev: true
 
   /dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
