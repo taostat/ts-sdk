@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/taostat/ts-sdk/compare/v1.1.1...v1.1.2) (2025-07-07)
+
+
+### Bug Fixes
+
+* add browser compatibility ([#18](https://github.com/taostat/ts-sdk/issues/18)) ([#19](https://github.com/taostat/ts-sdk/issues/19)) ([f23ac50](https://github.com/taostat/ts-sdk/commit/f23ac50c7e64075b483a086fb0c9b7f04ae5d479))
+
 ## [1.1.1](https://github.com/taostat/ts-sdk/compare/v1.1.0...v1.1.1) (2025-07-07)
 
 
