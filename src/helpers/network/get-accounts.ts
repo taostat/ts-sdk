@@ -1,6 +1,7 @@
 import { Keyring } from '@polkadot/api';
 import type { IKeyringPair } from '@polkadot/types/types';
 import { ApiManager } from './api-manager';
+import { hexToU8a } from '@polkadot/util';
 
 interface AccountConfig {
   seed?: string;  // Mnemonic seed phrase
@@ -25,7 +26,7 @@ function createAccount(config: AccountConfig): IKeyringPair {
     if (config.seed) {
       return keyring.addFromUri(config.seed);
     } else if (config.privateKey) {
-      return keyring.addFromSeed(Buffer.from(config.privateKey, 'hex'));
+      return keyring.addFromSeed(hexToU8a(config.privateKey));
     }
     throw new Error('Invalid account configuration');
   } catch (error) {
@@ -47,7 +48,7 @@ export function getAccounts(config?: {
   };
 
   const proxyConfig: AccountConfig | undefined = config?.proxy ||
-    (process.env.TAO_TRANSFER_PROXY_SEED ? {
+    (typeof process !== 'undefined' && process.env?.TAO_TRANSFER_PROXY_SEED ? {
       seed: process.env.TAO_TRANSFER_PROXY_SEED,
       type: 'sr25519'
     } : undefined);

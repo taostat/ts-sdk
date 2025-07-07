@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApiDecoration } from '@polkadot/api/types';
 import { HttpClient } from '../../client/http-client';
