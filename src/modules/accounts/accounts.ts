@@ -8,6 +8,7 @@ import {
   GetAccountHistoryParams,
   GetTransfersParams,
   GetOnChainIdentityParams,
+  PendingColdkeySwapResponse,
 } from './types';
 
 export class AccountsModule {
@@ -48,4 +49,13 @@ export class AccountsModule {
   async getOnChainIdentity(params?: GetOnChainIdentityParams): Promise<ApiResponse<PaginatedResponse<OnChainIdentityData>>> {
     return this.httpClient.get<PaginatedResponse<OnChainIdentityData>>('/api/identity/latest/v1', params);
   }
+
+   /**
+   * Get pending coldkey swap information
+   * @returns Promise with pending coldkey swap data including old and new coldkeys, execution details, and predicted execution timestamp
+   */
+   async getPendingColdkeySwap(): Promise<ApiResponse<PendingColdkeySwapResponse>> {
+    return this.httpClient.get<PendingColdkeySwapResponse>('/api/pending_coldkey_swap/v1');
+  }
+
 } 

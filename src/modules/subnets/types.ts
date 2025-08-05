@@ -160,7 +160,11 @@ export interface SubnetOwner {
   timestamp: string;
   netuid: number;
   owner: AddressType;
+  previous_owner: AddressType | null;
   is_coldkey_swap: boolean;
+  pending_owner: AddressType | null;
+  pending_owner_block_number: number | null;
+  pending_owner_timestamp: string | null;
 }
 
 // Query parameters for subnet owner

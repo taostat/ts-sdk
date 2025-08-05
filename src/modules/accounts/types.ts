@@ -1,4 +1,4 @@
-import { BaseQueryParams,AddressType } from '../../types/common';
+import { BaseQueryParams, AddressType, PaginatedResponse } from '../../types/common';
 
 
 // Account data structure (used by getAccount and getAccountHistory)
@@ -41,7 +41,7 @@ export interface TransferData {
 
 // On-chain identity data structure
 export interface OnChainIdentityData {
-  address:  AddressType;
+  address: AddressType;
   validator_hotkey: any | null; // Could be AccountAddress or null
   name: string;
   url: string;
@@ -98,4 +98,17 @@ export interface GetTransfersParams extends BaseQueryParams {
 // Query parameters for getOnChainIdentity
 export interface GetOnChainIdentityParams extends BaseQueryParams {
   address?: string; // Optional coldkey address - if not provided, returns paginated list
-} 
+}
+
+// Pending coldkey swap data
+export interface PendingColdkeySwap {
+  old_coldkey: AddressType;
+  new_coldkey: AddressType;
+  block_number: number;
+  timestamp: string;
+  execution_block_number: number;
+  predicted_execution_timestamp: string;
+}
+
+// Pending coldkey swap response
+export type PendingColdkeySwapResponse = PaginatedResponse<PendingColdkeySwap>;

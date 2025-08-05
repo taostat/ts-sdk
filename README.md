@@ -11,11 +11,15 @@ Taostats SDK for Bittensor.
 ## Installation
 
 ```bash
-npm install @taostats/sdk
+npm install @taostats/sdk # Uses NPM
+```
 # or
-yarn add @taostats/sdk
+```bash
+yarn add @taostats/sdk # Uses Yarn
+```
 # or
-pnpm add @taostats/sdk
+```bash
+pnpm add @taostats/sdk # Uses PNPM
 ```
 
 ## Usage
