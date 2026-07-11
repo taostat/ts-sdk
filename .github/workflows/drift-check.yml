@@ -66,8 +66,8 @@ jobs:
           commit-message: 'chore: regenerate SDK from updated OpenAPI spec (API drift)'
           title: 'chore: API drift — regenerate SDK from updated spec'
           body: |
-            The live OpenAPI spec has drifted from the pinned copy. This PR repins
-            `spec/openapi.json` and regenerates `src/generated/`.
+            @dougsillars — the live OpenAPI spec has drifted from the pinned copy.
+            This PR repins `spec/openapi.json` and regenerates `src/generated/`.
 
             Verified in CI: typecheck, lint, tests (frozen contract), and build all pass.
             **Review the endpoint changes below** — a REMOVED endpoint may break consumers.
@@ -75,6 +75,8 @@ jobs:
             ```
             ${{ steps.drift.outputs.summary }}
             ```
+          reviewers: dougsillars
+          assignees: dougsillars
           labels: |
             api-drift
             automated
