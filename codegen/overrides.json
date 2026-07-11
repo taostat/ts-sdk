@@ -1,0 +1,298 @@
+{
+  "GET /api/account/latest/v1": {
+    "module": "accounts",
+    "method": "getAccount"
+  },
+  "GET /api/account/history/v1": {
+    "module": "accounts",
+    "method": "getAccountHistory"
+  },
+  "GET /api/identity/latest/v1": {
+    "module": "accounts",
+    "method": "getOnChainIdentity"
+  },
+  "GET /api/pending_coldkey_swap/v1": {
+    "module": "accounts",
+    "method": "getPendingColdkeySwap"
+  },
+  "GET /api/transfer/v1": {
+    "module": "accounts",
+    "method": "getTransfers"
+  },
+  "GET /api/block/interval/v1": {
+    "module": "chain",
+    "method": "getBlockNumbersByInterval"
+  },
+  "GET /api/block/v1": {
+    "module": "chain",
+    "method": "getBlocks"
+  },
+  "GET /api/call/v1": {
+    "module": "chain",
+    "method": "getChainCalls"
+  },
+  "GET /api/event/v1": {
+    "module": "chain",
+    "method": "getEvents"
+  },
+  "GET /api/extrinsic/v1": {
+    "module": "chain",
+    "method": "getExtrinsics"
+  },
+  "GET /api/stats/latest/v1": {
+    "module": "chain",
+    "method": "getLatestStats"
+  },
+  "GET /api/proxy_call/v1": {
+    "module": "chain",
+    "method": "getProxyCalls"
+  },
+  "GET /api/runtime_version/latest/v1": {
+    "module": "chain",
+    "method": "getRuntimeVersion"
+  },
+  "GET /api/runtime_version/history/v1": {
+    "module": "chain",
+    "method": "getRuntimeVersionHistory"
+  },
+  "GET /api/stats/history/v1": {
+    "module": "chain",
+    "method": "getStatsHistory"
+  },
+  "GET /api/delegation/v1": {
+    "module": "delegations",
+    "method": "getDelegationEvents"
+  },
+  "GET /api/dtao/slippage/v1": {
+    "module": "delegations",
+    "method": "getSlippage"
+  },
+  "GET /api/dtao/stake_balance_aggregated/latest/v1": {
+    "module": "delegations",
+    "method": "getStakeBalanceSumInTao"
+  },
+  "GET /api/dtao/stake_balance/history/v1": {
+    "module": "delegations",
+    "method": "getdTaoHistoricalStakeBalance"
+  },
+  "GET /api/dtao/stake_balance/latest/v1": {
+    "module": "delegations",
+    "method": "getdTaoStakeBalance"
+  },
+  "GET /api/v1/live/blocks": {
+    "module": "live",
+    "method": "getExtrinsicsForBlockRange"
+  },
+  "GET /api/v1/live/blocks/{param}": {
+    "module": "live",
+    "method": "getExtrinsicsForSpecificBlock"
+  },
+  "GET /api/v1/live/accounts/{param}/balance-info": {
+    "module": "live",
+    "method": "getFreeTaoBalance"
+  },
+  "GET /api/v1/live/blocks/head": {
+    "module": "live",
+    "method": "getLatestBlockExtrinsics"
+  },
+  "GET /api/v1/live/node/transaction-pool": {
+    "module": "live",
+    "method": "getNodeTransactionPool"
+  },
+  "GET /api/v1/live/node/version": {
+    "module": "live",
+    "method": "getNodeVersion"
+  },
+  "GET /api/v1/live/pallets/{param}/consts": {
+    "module": "live",
+    "method": "getPalletByConstants"
+  },
+  "GET /api/v1/live/pallets/{param}/events": {
+    "module": "live",
+    "method": "getPalletEvents"
+  },
+  "GET /api/v1/live/blocks/{param}/extrinsics-raw": {
+    "module": "live",
+    "method": "getRawExtrinsicsForSpecificBlock"
+  },
+  "GET /api/metagraph/history/v1": {
+    "module": "metagraph",
+    "method": "getHistory"
+  },
+  "GET /api/metagraph/latest/v1": {
+    "module": "metagraph",
+    "method": "getLatest"
+  },
+  "GET /api/miner/weights/latest/v1": {
+    "module": "metagraph",
+    "method": "getLatestMinerWeight"
+  },
+  "GET /api/subnet/distribution/incentive/v1": {
+    "module": "metagraph",
+    "method": "getMinerIncentiveDistributionBySubnet"
+  },
+  "GET /api/miner/weights/history/v1": {
+    "module": "metagraph",
+    "method": "getMinerWeightHistory"
+  },
+  "GET /api/subnet/neuron/deregistration/v1": {
+    "module": "metagraph",
+    "method": "getNeuronDeregistrations"
+  },
+  "GET /api/subnet/neuron/registration/v1": {
+    "module": "metagraph",
+    "method": "getNeuronRegistrations"
+  },
+  "GET /api/metagraph/root/latest/v1": {
+    "module": "metagraph",
+    "method": "getRootSubnet"
+  },
+  "GET /api/metagraph/root/history/v1": {
+    "module": "metagraph",
+    "method": "getRootSubnetHistory"
+  },
+  "GET /api/subnet/distribution/ip/v1": {
+    "module": "metagraph",
+    "method": "getSubnetAxonIpDistribution"
+  },
+  "GET /api/subnet/distribution/coldkey/v1": {
+    "module": "metagraph",
+    "method": "getSubnetColdkeyDistribution"
+  },
+  "GET /api/dtao/pool/latest/v1": {
+    "module": "subnets",
+    "method": "getCurrentSubnetPools"
+  },
+  "GET /api/subnet/registration_cost/latest/v1": {
+    "module": "subnets",
+    "method": "getCurrentSubnetRegistrationCost"
+  },
+  "GET /api/dtao/pool/total_price/history/v1": {
+    "module": "subnets",
+    "method": "getHistoricalSubnetPricesSum"
+  },
+  "GET /api/dtao/pool/total_price/latest/v1": {
+    "module": "subnets",
+    "method": "getLatestSubnetPricesSum"
+  },
+  "GET /api/dtao/subnet_emission/v1": {
+    "module": "subnets",
+    "method": "getSubnetEmission"
+  },
+  "GET /api/subnet/history/v1": {
+    "module": "subnets",
+    "method": "getSubnetHistory"
+  },
+  "GET /api/subnet/identity/v1": {
+    "module": "subnets",
+    "method": "getSubnetIdentity"
+  },
+  "GET /api/subnet/owner/v1": {
+    "module": "subnets",
+    "method": "getSubnetOwner"
+  },
+  "GET /api/subnet/registration_cost/history/v1": {
+    "module": "subnets",
+    "method": "getSubnetRegistrationCostHistory"
+  },
+  "GET /api/subnet/registration/v1": {
+    "module": "subnets",
+    "method": "getSubnetRegistrations"
+  },
+  "GET /api/subnet/latest/v1": {
+    "module": "subnets",
+    "method": "getSubnets"
+  },
+  "GET /api/dtao/pool/history/v1": {
+    "module": "subnets",
+    "method": "getSubnetsPoolsHistory"
+  },
+  "GET /api/price/latest/v1": {
+    "module": "taoPrices",
+    "method": "getTaoPrice"
+  },
+  "GET /api/price/history/v1": {
+    "module": "taoPrices",
+    "method": "getTaoPriceHistory"
+  },
+  "GET /api/price/ohlc/v1": {
+    "module": "taoPrices",
+    "method": "getTaoPriceOHLC"
+  },
+  "GET /api/dtao/tradingview/udf/history": {
+    "module": "tradingView",
+    "method": "getTradingViewHistory"
+  },
+  "GET /api/dtao/hotkey_alpha_shares/history/v1": {
+    "module": "validators",
+    "method": "getAlphaSharesHistory"
+  },
+  "GET /api/dtao/hotkey_alpha_shares/latest/v1": {
+    "module": "validators",
+    "method": "getAlphaSharesLatest"
+  },
+  "GET /api/validator/metrics/history/v1": {
+    "module": "validators",
+    "method": "getMetricsHistory"
+  },
+  "GET /api/validator/metrics/latest/v1": {
+    "module": "validators",
+    "method": "getMetricsLatest"
+  },
+  "GET /api/hotkey/family/history/v1": {
+    "module": "validators",
+    "method": "getParentChildHotkeyRelationsHistory"
+  },
+  "GET /api/hotkey/family/latest/v1": {
+    "module": "validators",
+    "method": "getParentChildHotkeyRelationsLatest"
+  },
+  "GET /api/validator/performance/v1": {
+    "module": "validators",
+    "method": "getPerformance"
+  },
+  "GET /api/validator/history/v1": {
+    "module": "validators",
+    "method": "getValidatorHistory"
+  },
+  "GET /api/validator/latest/v1": {
+    "module": "validators",
+    "method": "getValidatorLatest"
+  },
+  "GET /api/dtao/validator/available/v1": {
+    "module": "validators",
+    "method": "getValidatorsInSubnet"
+  },
+  "GET /api/validator/weight_copier/v1": {
+    "module": "validators",
+    "method": "getWeightCopiers"
+  },
+  "GET /api/validator/weights/history/v2": {
+    "module": "validators",
+    "method": "getWeightsHistory"
+  },
+  "GET /api/validator/weights/latest/v2": {
+    "module": "validators",
+    "method": "getWeightsLatest"
+  },
+  "GET /api/dtao/validator/yield/latest/v1": {
+    "module": "validators",
+    "method": "getYield"
+  },
+  "GET /api/dtao/validator/history/v1": {
+    "module": "validators",
+    "method": "getdTaoValidatorHistory"
+  },
+  "GET /api/dtao/validator/latest/v1": {
+    "module": "validators",
+    "method": "getdTaoValidatorLatest"
+  },
+  "GET /api/dtao/validator/performance/history/v1": {
+    "module": "validators",
+    "method": "getdTaoValidatorPerformanceHistory"
+  },
+  "GET /api/dtao/validator/performance/latest/v1": {
+    "module": "validators",
+    "method": "getdTaoValidatorPerformanceLatest"
+  }
+}
