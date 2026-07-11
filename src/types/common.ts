@@ -44,4 +44,5 @@ export interface TaoStatsPagination {
 }
 
 // Base order options used by endpoints
-export type BaseOrderOptions = 'block_number_asc' | 'block_number_desc' | 'timestamp_asc' | 'timestamp_desc';
+export type BaseOrderOptions =
+  'block_number_asc' | 'block_number_desc' | 'timestamp_asc' | 'timestamp_desc';

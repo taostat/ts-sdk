@@ -10,16 +10,21 @@ import {
 } from './types';
 
 export class TaoPricesModule {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   /**
    * Get the latest TAO price
    * @param params - Query parameters for the request
    * @returns Promise with the latest TAO price data
    */
-  async getTaoPrice(params?: GetTaoPriceParams): Promise<ApiResponse<TaoStatsResponse<TaoPriceData>>> {
+  async getTaoPrice(
+    params?: GetTaoPriceParams
+  ): Promise<ApiResponse<TaoStatsResponse<TaoPriceData>>> {
     const requestParams = { asset: 'tao', ...params };
-    return this.httpClient.get<TaoStatsResponse<TaoPriceData>>('/api/price/latest/v1', requestParams);
+    return this.httpClient.get<TaoStatsResponse<TaoPriceData>>(
+      '/api/price/latest/v1',
+      requestParams
+    );
   }
 
   /**
@@ -27,9 +32,14 @@ export class TaoPricesModule {
    * @param params - Query parameters including timestamp range, pagination, etc.
    * @returns Promise with historical TAO price data
    */
-  async getTaoPriceHistory(params?: GetTaoPriceHistoryParams): Promise<ApiResponse<TaoStatsResponse<TaoPriceData>>> {
+  async getTaoPriceHistory(
+    params?: GetTaoPriceHistoryParams
+  ): Promise<ApiResponse<TaoStatsResponse<TaoPriceData>>> {
     const requestParams = { asset: 'TAO', ...params };
-    return this.httpClient.get<TaoStatsResponse<TaoPriceData>>('/api/price/history/v1', requestParams);
+    return this.httpClient.get<TaoStatsResponse<TaoPriceData>>(
+      '/api/price/history/v1',
+      requestParams
+    );
   }
 
   /**
@@ -37,8 +47,13 @@ export class TaoPricesModule {
    * @param params - Query parameters including period, timestamp range, pagination, etc.
    * @returns Promise with TAO OHLC data
    */
-  async getTaoPriceOHLC(params?: GetTaoPriceOHLCParams): Promise<ApiResponse<TaoStatsResponse<TaoOHLCData>>> {
+  async getTaoPriceOHLC(
+    params?: GetTaoPriceOHLCParams
+  ): Promise<ApiResponse<TaoStatsResponse<TaoOHLCData>>> {
     const requestParams = { asset: 'tao', period: '1d', ...params };
-    return this.httpClient.get<TaoStatsResponse<TaoOHLCData>>('/api/price/ohlc/v1', requestParams);
+    return this.httpClient.get<TaoStatsResponse<TaoOHLCData>>(
+      '/api/price/ohlc/v1',
+      requestParams
+    );
   }
-} 
+}

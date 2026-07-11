@@ -2,4 +2,4 @@
 export { AccountsModule } from './accounts';
 
 // Export types
-export * from './types'; 
+export * from './types';

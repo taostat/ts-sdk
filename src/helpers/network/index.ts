@@ -3,7 +3,11 @@ export { decodeNumeric } from './decode-numeric';
 export type { StorageEntries, StorageKeys, PoolPrice } from './types';
 
 // Storage utilities
-export { getStorage, getStorageEntriesPaged, getBlockStorage } from './get-storage';
+export {
+  getStorage,
+  getStorageEntriesPaged,
+  getBlockStorage,
+} from './get-storage';
 
 // Re-export BigNumber for convenience
 export { default as BigNumber } from './bignumber';
@@ -12,7 +16,11 @@ export { default as BigNumber } from './bignumber';
 export { getAccounts } from './get-accounts';
 
 // Balance utilities
-export { getFreeBalance, getAlphaBalance, getAlphaBalanceAtBlock } from './get-balance';
+export {
+  getFreeBalance,
+  getAlphaBalance,
+  getAlphaBalanceAtBlock,
+} from './get-balance';
 
 // Pool price utilities
 export { getPoolPrice, getPoolPrices } from './get-pool-prices';

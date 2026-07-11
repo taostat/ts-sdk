@@ -1,6 +1,5 @@
 import { BaseQueryParams, AddressType } from '../../types/common';
 
-
 // Slippage calculation data
 export interface SlippageData {
   netuid: number;
@@ -117,4 +116,4 @@ export interface GetdTaoHistoricalStakeBalanceParams {
   coldkey: string; // Required: Coldkey of wallet owner
   hotkey: string; // Required: Hotkey of validator staked with
   netuid: number; // Required: Subnet
-} 
+}

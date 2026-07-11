@@ -7,4 +7,4 @@ export interface TaoStatsConfig {
   rpcUrl?: string;
   seed?: string;
   privateKey?: string;
-} 
+}

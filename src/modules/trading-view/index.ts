@@ -2,4 +2,4 @@
 export { TradingViewModule } from './trading-view';
 
 // Export types
-export * from './types'; 
+export * from './types';

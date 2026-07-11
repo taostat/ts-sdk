@@ -14,20 +14,25 @@ import {
 } from './types';
 
 export class DelegationsModule {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   /**
    * Calculate slippage for TAO ⇄ Alpha token swaps
    * @param params - Query parameters including netuid, input_tokens, and direction
    * @returns Promise with slippage calculation data
    */
-  async getSlippage(params: GetSlippageParams): Promise<ApiResponse<PaginatedResponse<SlippageData>>> {
+  async getSlippage(
+    params: GetSlippageParams
+  ): Promise<ApiResponse<PaginatedResponse<SlippageData>>> {
     // Set default direction if not provided
     const queryParams = {
       direction: 'tao_to_alpha',
       ...params,
     };
-    return this.httpClient.get<PaginatedResponse<SlippageData>>('/api/dtao/slippage/v1', queryParams);
+    return this.httpClient.get<PaginatedResponse<SlippageData>>(
+      '/api/dtao/slippage/v1',
+      queryParams
+    );
   }
 
   /**
@@ -35,8 +40,13 @@ export class DelegationsModule {
    * @param params - Optional query parameters for filtering delegation events
    * @returns Promise with delegation event data
    */
-  async getDelegationEvents(params?: GetDelegationEventsParams): Promise<ApiResponse<PaginatedResponse<DelegationEventData>>> {
-    return this.httpClient.get<PaginatedResponse<DelegationEventData>>('/api/delegation/v1', params);
+  async getDelegationEvents(
+    params?: GetDelegationEventsParams
+  ): Promise<ApiResponse<PaginatedResponse<DelegationEventData>>> {
+    return this.httpClient.get<PaginatedResponse<DelegationEventData>>(
+      '/api/delegation/v1',
+      params
+    );
   }
 
   /**
@@ -44,8 +54,13 @@ export class DelegationsModule {
    * @param params - Optional query parameters for filtering aggregated stake data
    * @returns Promise with aggregated stake balance data
    */
-  async getStakeBalanceSumInTao(params?: GetStakeBalanceSumInTaoParams): Promise<ApiResponse<PaginatedResponse<StakeBalanceSumData>>> {
-    return this.httpClient.get<PaginatedResponse<StakeBalanceSumData>>('/api/dtao/stake_balance_aggregated/latest/v1', params);
+  async getStakeBalanceSumInTao(
+    params?: GetStakeBalanceSumInTaoParams
+  ): Promise<ApiResponse<PaginatedResponse<StakeBalanceSumData>>> {
+    return this.httpClient.get<PaginatedResponse<StakeBalanceSumData>>(
+      '/api/dtao/stake_balance_aggregated/latest/v1',
+      params
+    );
   }
 
   /**
@@ -53,8 +68,13 @@ export class DelegationsModule {
    * @param params - Optional query parameters for filtering individual stake positions
    * @returns Promise with individual stake balance data
    */
-  async getdTaoStakeBalance(params?: GetdTaoStakeBalanceParams): Promise<ApiResponse<PaginatedResponse<StakeBalanceData>>> {
-    return this.httpClient.get<PaginatedResponse<StakeBalanceData>>('/api/dtao/stake_balance/latest/v1', params);
+  async getdTaoStakeBalance(
+    params?: GetdTaoStakeBalanceParams
+  ): Promise<ApiResponse<PaginatedResponse<StakeBalanceData>>> {
+    return this.httpClient.get<PaginatedResponse<StakeBalanceData>>(
+      '/api/dtao/stake_balance/latest/v1',
+      params
+    );
   }
 
   /**
@@ -62,7 +82,12 @@ export class DelegationsModule {
    * @param params - Query parameters including required coldkey, hotkey, and netuid
    * @returns Promise with historical stake balance data
    */
-  async getdTaoHistoricalStakeBalance(params: GetdTaoHistoricalStakeBalanceParams): Promise<ApiResponse<PaginatedResponse<HistoricalStakeBalanceData>>> {
-    return this.httpClient.get<PaginatedResponse<HistoricalStakeBalanceData>>('/api/dtao/stake_balance/history/v1', params);
+  async getdTaoHistoricalStakeBalance(
+    params: GetdTaoHistoricalStakeBalanceParams
+  ): Promise<ApiResponse<PaginatedResponse<HistoricalStakeBalanceData>>> {
+    return this.httpClient.get<PaginatedResponse<HistoricalStakeBalanceData>>(
+      '/api/dtao/stake_balance/history/v1',
+      params
+    );
   }
-} 
+}

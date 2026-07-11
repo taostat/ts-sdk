@@ -1,5 +1,8 @@
-import { BaseQueryParams, AddressType, PaginatedResponse } from '../../types/common';
-
+import {
+  BaseQueryParams,
+  AddressType,
+  PaginatedResponse,
+} from '../../types/common';
 
 // Account data structure (used by getAccount and getAccountHistory)
 export interface AccountData {

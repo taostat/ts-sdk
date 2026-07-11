@@ -61,7 +61,11 @@ export class TaoStatsClient {
   /**
    * Get health status of the API
    */
-  async getHealth(): Promise<ApiResponse<{ status: string; timestamp: string }>> {
-    return this.httpClient.get<{ status: string; timestamp: string }>('/api/status/v1');
+  async getHealth(): Promise<
+    ApiResponse<{ status: string; timestamp: string }>
+  > {
+    return this.httpClient.get<{ status: string; timestamp: string }>(
+      '/api/status/v1'
+    );
   }
-} 
+}

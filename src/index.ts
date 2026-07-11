@@ -18,11 +18,11 @@ export * from './modules/move';
 // export * from './modules/utils';
 export * from './modules/chain';
 export * from './modules/live';
-export * from './modules/subnets'
-export * from './modules/metagraph'
-export * from './modules/validators'
+export * from './modules/subnets';
+export * from './modules/metagraph';
+export * from './modules/validators';
 // Utility exports
 export * from './helpers/constants';
 
 // Default export
-export { TaoStatsClient as default } from './client/taostats-client'; 
+export { TaoStatsClient as default } from './client/taostats-client';

@@ -1,6 +1,9 @@
 import { getPoolPrices } from './get-pool-prices';
 import BigNumber from './bignumber';
-import { AlphaTransferParams, SlippageInfo } from '../../modules/transfer/types';
+import {
+  AlphaTransferParams,
+  SlippageInfo,
+} from '../../modules/transfer/types';
 
 export interface StakingSlippageInfo {
   slippagePercentage: number;
@@ -26,7 +29,7 @@ export async function calculateStakeSlippage(
         slippagePercentage: 0,
         receivedAmount: taoAmount,
         idealAmount: taoAmount,
-        poolData: { subnetPool: null }
+        poolData: { subnetPool: null },
       };
     }
 
@@ -41,7 +44,9 @@ export async function calculateStakeSlippage(
     // Amount after fee
     const taoAfterFee = new BigNumber(taoAmount).minus(stakeFee);
     if (taoAfterFee.isLessThanOrEqualTo(0)) {
-      throw new Error(`Stake amount too small - fee ${stakeFee} TAO exceeds stake amount ${taoAmount} TAO`);
+      throw new Error(
+        `Stake amount too small - fee ${stakeFee} TAO exceeds stake amount ${taoAmount} TAO`
+      );
     }
 
     // Convert TAO to Alpha using AMM formula
@@ -54,13 +59,18 @@ export async function calculateStakeSlippage(
       alphaReserves.toString()
     );
 
-    console.log(`${taoAfterFee.toString()} TAO -> Alpha ${receivedAlpha} in subnet ${netuid}`);
+    console.log(
+      `${taoAfterFee.toString()} TAO -> Alpha ${receivedAlpha} in subnet ${netuid}`
+    );
 
     // Calculate slippage vs ideal 1:1 conversion
     const idealAlpha = new BigNumber(taoAmount);
     const actualAlpha = new BigNumber(receivedAlpha);
 
-    const slippage = idealAlpha.minus(actualAlpha).dividedBy(idealAlpha).multipliedBy(100);
+    const slippage = idealAlpha
+      .minus(actualAlpha)
+      .dividedBy(idealAlpha)
+      .multipliedBy(100);
     const slippagePercentage = Math.max(0, slippage.toNumber());
 
     console.log(`Price: ${subnetPool.price.toString()} TAO per Alpha`);
@@ -69,12 +79,13 @@ export async function calculateStakeSlippage(
       slippagePercentage,
       receivedAmount: receivedAlpha,
       idealAmount: taoAmount,
-      poolData: { subnetPool }
+      poolData: { subnetPool },
     };
-
   } catch (error) {
     console.error('Error calculating stake slippage:', error);
-    throw new Error(`Failed to calculate stake slippage: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to calculate stake slippage: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -92,7 +103,7 @@ export async function calculateUnstakeSlippage(
         slippagePercentage: 0,
         receivedAmount: alphaAmount,
         idealAmount: alphaAmount,
-        poolData: { subnetPool: null }
+        poolData: { subnetPool: null },
       };
     }
 
@@ -114,10 +125,14 @@ export async function calculateUnstakeSlippage(
       taoReserves.toString()
     );
 
-    console.log(`Alpha ${alphaAmount} -> TAO ${receivedTao} from subnet ${netuid}`);
+    console.log(
+      `Alpha ${alphaAmount} -> TAO ${receivedTao} from subnet ${netuid}`
+    );
 
     // Calculate ideal TAO value
-    const idealTaoAmount = new BigNumber(alphaAmount).multipliedBy(subnetPool.price);
+    const idealTaoAmount = new BigNumber(alphaAmount).multipliedBy(
+      subnetPool.price
+    );
 
     // Calculate slippage BEFORE applying fees
     const actualTaoAmount = new BigNumber(receivedTao);
@@ -128,7 +143,9 @@ export async function calculateUnstakeSlippage(
     // Apply fee after slippage calculation
     const taoAfterFee = actualTaoAmount.minus(unstakeFee);
     if (taoAfterFee.isLessThanOrEqualTo(0)) {
-      throw new Error(`Unstake amount too small - fee ${unstakeFee} TAO exceeds converted amount ${receivedTao} TAO`);
+      throw new Error(
+        `Unstake amount too small - fee ${unstakeFee} TAO exceeds converted amount ${receivedTao} TAO`
+      );
     }
 
     console.log(`Price: ${subnetPool.price.toString()} TAO per Alpha`);
@@ -137,12 +154,13 @@ export async function calculateUnstakeSlippage(
       slippagePercentage,
       receivedAmount: taoAfterFee.toString(),
       idealAmount: idealTaoAmount.toString(),
-      poolData: { subnetPool }
+      poolData: { subnetPool },
     };
-
   } catch (error) {
     console.error('Error calculating unstake slippage:', error);
-    throw new Error(`Failed to calculate unstake slippage: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to calculate unstake slippage: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -153,16 +171,24 @@ export async function validateStakeSlippageLimits(
   taoAmount: string,
   netuid: number,
   stakeFee: string,
-  maxSlippageTolerance: number,
-): Promise<{ isValid: boolean; slippageInfo?: StakingSlippageInfo; error?: string }> {
+  maxSlippageTolerance: number
+): Promise<{
+  isValid: boolean;
+  slippageInfo?: StakingSlippageInfo;
+  error?: string;
+}> {
   try {
-    const slippageInfo = await calculateStakeSlippage(taoAmount, netuid, stakeFee);
+    const slippageInfo = await calculateStakeSlippage(
+      taoAmount,
+      netuid,
+      stakeFee
+    );
 
     if (slippageInfo.slippagePercentage > maxSlippageTolerance) {
       return {
         isValid: false,
         slippageInfo,
-        error: `Stake slippage ${slippageInfo.slippagePercentage.toFixed(2)}% exceeds maximum allowed ${maxSlippageTolerance}%`
+        error: `Stake slippage ${slippageInfo.slippagePercentage.toFixed(2)}% exceeds maximum allowed ${maxSlippageTolerance}%`,
       };
     }
 
@@ -170,11 +196,13 @@ export async function validateStakeSlippageLimits(
       isValid: true,
       slippageInfo,
     };
-
   } catch (error) {
     return {
       isValid: false,
-      error: error instanceof Error ? error.message : 'Unknown error validating stake slippage'
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error validating stake slippage',
     };
   }
 }
@@ -186,28 +214,38 @@ export async function validateUnstakeSlippageLimits(
   alphaAmount: string,
   netuid: number,
   unstakeFee: string,
-  maxSlippageTolerance: number,
-): Promise<{ isValid: boolean; slippageInfo?: StakingSlippageInfo; error?: string }> {
+  maxSlippageTolerance: number
+): Promise<{
+  isValid: boolean;
+  slippageInfo?: StakingSlippageInfo;
+  error?: string;
+}> {
   try {
-    const slippageInfo = await calculateUnstakeSlippage(alphaAmount, netuid, unstakeFee);
+    const slippageInfo = await calculateUnstakeSlippage(
+      alphaAmount,
+      netuid,
+      unstakeFee
+    );
 
     if (slippageInfo.slippagePercentage > maxSlippageTolerance) {
       return {
         isValid: false,
         slippageInfo,
-        error: `Unstake slippage ${slippageInfo.slippagePercentage.toFixed(2)}% exceeds maximum allowed ${maxSlippageTolerance}%`
+        error: `Unstake slippage ${slippageInfo.slippagePercentage.toFixed(2)}% exceeds maximum allowed ${maxSlippageTolerance}%`,
       };
     }
 
     return {
       isValid: true,
-      slippageInfo
+      slippageInfo,
     };
-
   } catch (error) {
     return {
       isValid: false,
-      error: error instanceof Error ? error.message : 'Unknown error validating unstake slippage'
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error validating unstake slippage',
     };
   }
 }
@@ -261,7 +299,7 @@ export function getAlphaFromTaoForSlippageCalc(
  */
 export async function calculateAlphaTransferSlippage(
   params: AlphaTransferParams,
-  stakeFee: string,
+  stakeFee: string
 ): Promise<SlippageInfo> {
   try {
     const transferAmount = new BigNumber(params.amount);
@@ -276,8 +314,8 @@ export async function calculateAlphaTransferSlippage(
         idealAmount: params.amount,
         poolData: {
           originPool: null,
-          destinationPool: null
-        }
+          destinationPool: null,
+        },
       };
     }
 
@@ -288,7 +326,9 @@ export async function calculateAlphaTransferSlippage(
     const destinationPool = poolPricesMap.get(params.to_subnet);
 
     if (!originPool || !destinationPool) {
-      throw new Error(`Pool data not available for subnets ${params.from_subnet} or ${params.to_subnet}`);
+      throw new Error(
+        `Pool data not available for subnets ${params.from_subnet} or ${params.to_subnet}`
+      );
     }
 
     // Step 1: Convert Alpha to TAO in origin subnet (using base reserves only, matching Python CLI)
@@ -301,13 +341,17 @@ export async function calculateAlphaTransferSlippage(
       originTaoReserves.toString()
     );
 
-    console.log(`Alpha ${params.amount} -> TAO ${taoFromAlpha} in origin subnet`);
+    console.log(
+      `Alpha ${params.amount} -> TAO ${taoFromAlpha} in origin subnet`
+    );
 
     // Step 2: Subtract stake fee
     const taoAfterFee = new BigNumber(taoFromAlpha).minus(stakeFee);
 
     if (taoAfterFee.isLessThanOrEqualTo(0)) {
-      throw new Error(`Transfer amount too small - fee ${stakeFee} TAO exceeds converted amount ${taoFromAlpha} TAO`);
+      throw new Error(
+        `Transfer amount too small - fee ${stakeFee} TAO exceeds converted amount ${taoFromAlpha} TAO`
+      );
     }
 
     console.log(`TAO after fee: ${taoAfterFee.toString()}`);
@@ -326,7 +370,10 @@ export async function calculateAlphaTransferSlippage(
     const receivedAmount = new BigNumber(finalAlpha);
     const idealAmount = transferAmount; // What we'd get with no slippage
 
-    const slippage = idealAmount.minus(receivedAmount).dividedBy(idealAmount).multipliedBy(100);
+    const slippage = idealAmount
+      .minus(receivedAmount)
+      .dividedBy(idealAmount)
+      .multipliedBy(100);
     const slippagePercentage = Math.max(0, slippage.toNumber()); // Ensure non-negative
 
     return {
@@ -335,12 +382,13 @@ export async function calculateAlphaTransferSlippage(
       idealAmount: params.amount,
       poolData: {
         originPool,
-        destinationPool
-      }
+        destinationPool,
+      },
     };
-
   } catch (error) {
     console.error('Error calculating slippage:', error);
-    throw new Error(`Failed to calculate slippage: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to calculate slippage: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }

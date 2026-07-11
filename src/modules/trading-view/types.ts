@@ -15,4 +15,4 @@ export interface GetTradingViewHistoryParams {
   resolution: string; // required: granularity (1,5,15,60 for minutes, 1D,7D,30D for days)
   from: number; // required: unix timestamp
   to: number; // required: unix timestamp
-} 
+}

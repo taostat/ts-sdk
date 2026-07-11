@@ -61,4 +61,4 @@ export interface GetTaoPriceOHLCParams extends BaseQueryParams {
   period?: '1h' | '1d' | '1m'; // defaults to '1d'
   timestamp_start?: number; // Unix timestamp (seconds)
   timestamp_end?: number; // Unix timestamp (seconds)
-} 
+}
