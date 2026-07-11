@@ -45,28 +45,31 @@ export function validateAddress(address: string): boolean {
 /**
  * Validates amount for any operation (transfer, stake, unstake)
  */
-export function validateAmount(amount: string, operation: string = 'operation'): ValidationResult {
+export function validateAmount(
+  amount: string,
+  operation: string = 'operation'
+): ValidationResult {
   try {
     const amountBN = new BigNumber(amount);
 
     if (amountBN.isNaN()) {
       return {
         isValid: false,
-        error: 'Amount must be a valid number'
+        error: 'Amount must be a valid number',
       };
     }
 
     if (amountBN.isLessThanOrEqualTo(0)) {
       return {
         isValid: false,
-        error: 'Amount must be greater than 0'
+        error: 'Amount must be greater than 0',
       };
     }
 
     if (amountBN.isGreaterThan(1000000)) {
       return {
         isValid: false,
-        error: `Amount exceeds maximum ${operation} limit (1,000,000 TAO)`
+        error: `Amount exceeds maximum ${operation} limit (1,000,000 TAO)`,
       };
     }
 
@@ -74,7 +77,7 @@ export function validateAmount(amount: string, operation: string = 'operation'):
   } catch (error) {
     return {
       isValid: false,
-      error: `Invalid amount format: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Invalid amount format: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }
@@ -87,14 +90,14 @@ export function validateSubnetId(netuid: number): ValidationResult {
   if (!Number.isInteger(netuid)) {
     return {
       isValid: false,
-      error: 'Subnet ID must be an integer'
+      error: 'Subnet ID must be an integer',
     };
   }
 
   if (netuid < 0) {
     return {
       isValid: false,
-      error: 'Subnet ID must be non-negative'
+      error: 'Subnet ID must be non-negative',
     };
   }
 
@@ -108,14 +111,14 @@ export function validateHotkey(hotkey: string): ValidationResult {
   if (!hotkey || hotkey.trim().length === 0) {
     return {
       isValid: false,
-      error: 'Hotkey cannot be empty'
+      error: 'Hotkey cannot be empty',
     };
   }
 
   if (!validateAddress(hotkey)) {
     return {
       isValid: false,
-      error: 'Invalid hotkey address format'
+      error: 'Invalid hotkey address format',
     };
   }
 
@@ -129,14 +132,14 @@ export function validateSlippageTolerance(tolerance: number): ValidationResult {
   if (tolerance < 0) {
     return {
       isValid: false,
-      error: 'Slippage tolerance cannot be negative'
+      error: 'Slippage tolerance cannot be negative',
     };
   }
 
   if (tolerance > 1) {
     return {
       isValid: false,
-      error: 'Slippage tolerance cannot exceed 100% (1.0)'
+      error: 'Slippage tolerance cannot exceed 100% (1.0)',
     };
   }
 
@@ -163,21 +166,21 @@ export function checkSufficientBalance(
         isValid: false,
         error: `Insufficient balance for ${operation}. Required: ${requiredBN.toString()} TAO, Available: ${balanceBN.toString()} TAO`,
         details: {
-          balanceCheck: false
-        }
+          balanceCheck: false,
+        },
       };
     }
 
     return {
       isValid: true,
       details: {
-        balanceCheck: true
-      }
+        balanceCheck: true,
+      },
     };
   } catch (error) {
     return {
       isValid: false,
-      error: `Balance validation error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Balance validation error: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }
@@ -212,7 +215,11 @@ export function validateBlockchainParams(params: {
   if (params.amount) {
     const amountValidation = validateAmount(params.amount, operation);
     if (!amountValidation.isValid) {
-      throw new InvalidAmountError(params.amount, amountValidation.error, operation);
+      throw new InvalidAmountError(
+        params.amount,
+        amountValidation.error,
+        operation
+      );
     }
   }
 
@@ -226,9 +233,15 @@ export function validateBlockchainParams(params: {
 
   // Validate slippage tolerance if provided
   if (params.slippageTolerance !== undefined) {
-    const slippageValidation = validateSlippageTolerance(params.slippageTolerance);
+    const slippageValidation = validateSlippageTolerance(
+      params.slippageTolerance
+    );
     if (!slippageValidation.isValid) {
-      throw new InvalidAmountError(params.slippageTolerance.toString(), slippageValidation.error, 'slippage tolerance');
+      throw new InvalidAmountError(
+        params.slippageTolerance.toString(),
+        slippageValidation.error,
+        'slippage tolerance'
+      );
     }
   }
 
@@ -238,8 +251,8 @@ export function validateBlockchainParams(params: {
       addressCheck: true,
       amountCheck: true,
       hotkeyCheck: true,
-      subnetCheck: true
-    }
+      subnetCheck: true,
+    },
   };
 }
 
@@ -251,7 +264,6 @@ export function validateTaoTransferParams(
   amount: string,
   from?: string
 ): ValidationResult {
-
   // Validate destination address
   if (!validateAddress(to)) {
     throw new InvalidAddressError(to, 'Invalid destination address format');
@@ -272,8 +284,8 @@ export function validateTaoTransferParams(
     isValid: true,
     details: {
       addressCheck: true,
-      amountCheck: true
-    }
+      amountCheck: true,
+    },
   };
 }
 
@@ -313,8 +325,14 @@ export function validateAlphaTransferParams(params: AlphaTransferParams): void {
 
   // Validate slippage if provided
   if (params.maxSlippage !== undefined) {
-    if (typeof params.maxSlippage !== 'number' || params.maxSlippage < 0 || params.maxSlippage > 100) {
-      throw new Error(`Invalid max slippage: ${params.maxSlippage}. Must be between 0 and 100`);
+    if (
+      typeof params.maxSlippage !== 'number' ||
+      params.maxSlippage < 0 ||
+      params.maxSlippage > 100
+    ) {
+      throw new Error(
+        `Invalid max slippage: ${params.maxSlippage}. Must be between 0 and 100`
+      );
     }
   }
 }
@@ -333,4 +351,4 @@ export function taoToRao(taoAmount: string): string {
 export function raoToTao(rawAmount: string): string {
   const amountBN = new BigNumber(rawAmount);
   return amountBN.dividedBy(1e9).toString();
-} 
+}

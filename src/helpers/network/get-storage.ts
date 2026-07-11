@@ -4,11 +4,10 @@ import { ApiManager } from './api-manager';
 import { raoToTao } from '../validation';
 import { getAlphaBalance } from './get-balance';
 
-
 export async function getStorage(
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any,
+  args?: any
 ): Promise<Codec | undefined> {
   const apiManager = ApiManager.getInstance();
   const api = await apiManager.getApi();
@@ -30,7 +29,7 @@ export async function getBlockStorage(
   blockNumber: number,
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any,
+  args?: any
 ): Promise<Codec | undefined> {
   const apiManager = ApiManager.getInstance();
   const apiAt = await apiManager.getApiAtBlock(blockNumber);
@@ -52,7 +51,7 @@ export async function getBlockStorageEntries(
   blockNumber: number,
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any,
+  args?: any
 ): Promise<StorageEntries> {
   const apiManager = ApiManager.getInstance();
   const apiAt = await apiManager.getApiAtBlock(blockNumber);
@@ -72,7 +71,7 @@ export async function getBlockStorageEntriesPaged(
   blockNumber: number,
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any[],
+  args?: any[]
 ): Promise<StorageEntries> {
   const apiManager = ApiManager.getInstance();
   const apiAt = await apiManager.getApiAtBlock(blockNumber);
@@ -107,7 +106,7 @@ export async function getBlockStorageEntriesPaged(
 export async function getStorageEntriesPaged(
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any[],
+  args?: any[]
 ): Promise<StorageEntries> {
   const apiManager = ApiManager.getInstance();
   const api = await apiManager.getApi();
@@ -143,7 +142,7 @@ export async function getBlockStorageKeysPaged(
   blockNumber: number,
   storageKey: string,
   pallet = 'subtensorModule',
-  args?: any[],
+  args?: any[]
 ): Promise<StorageKeys> {
   const apiManager = ApiManager.getInstance();
   const apiAt = await apiManager.getApiAtBlock(blockNumber);
@@ -194,14 +193,17 @@ export async function checkSubnetExists(netuid: number): Promise<boolean> {
 export async function getStakeBalance(
   coldkey: string,
   hotkey: string,
-  netuid: number,
+  netuid: number
 ): Promise<string> {
   try {
     // Use the existing getAlphaBalance function which knows the correct storage pattern
     const balanceRaw = await getAlphaBalance(coldkey, hotkey, netuid);
     return raoToTao(balanceRaw.toString());
   } catch (error) {
-    console.error(`Error getting stake balance for ${coldkey}/${hotkey} in subnet ${netuid}:`, error);
+    console.error(
+      `Error getting stake balance for ${coldkey}/${hotkey} in subnet ${netuid}:`,
+      error
+    );
     return '0';
   }
 }
@@ -209,7 +211,10 @@ export async function getStakeBalance(
 /**
  * Gets subnet information including pool data for slippage calculations
  */
-export async function getSubnetInfo(netuid: number, rpcUrl?: string): Promise<{
+export async function getSubnetInfo(
+  netuid: number,
+  rpcUrl?: string
+): Promise<{
   taoIn: string;
   alphaIn: string;
   isDynamic: boolean;
@@ -221,7 +226,7 @@ export async function getSubnetInfo(netuid: number, rpcUrl?: string): Promise<{
     const [taoReserve, alphaReserve, subnetInfo] = await Promise.all([
       getStorage('taoReserves', 'subtensorModule', netuid),
       getStorage('alphaReserves', 'subtensorModule', netuid),
-      getStorage('subnetInfo', 'subtensorModule', netuid)
+      getStorage('subnetInfo', 'subtensorModule', netuid),
     ]);
 
     if (!taoReserve || !alphaReserve) {
@@ -234,7 +239,7 @@ export async function getSubnetInfo(netuid: number, rpcUrl?: string): Promise<{
           taoIn: raoToTao(poolInfo.tao_reserve || '0'),
           alphaIn: raoToTao(poolInfo.alpha_reserve || '0'),
           isDynamic: poolInfo.is_dynamic || false,
-          price: poolInfo.price || '1'
+          price: poolInfo.price || '1',
         };
       }
       return null;
@@ -244,11 +249,10 @@ export async function getSubnetInfo(netuid: number, rpcUrl?: string): Promise<{
       taoIn: raoToTao(taoReserve.toString()),
       alphaIn: raoToTao(alphaReserve.toString()),
       isDynamic: true, // Assume dynamic for now
-      price: '1' // Will be calculated from reserves
+      price: '1', // Will be calculated from reserves
     };
   } catch (error) {
     console.error(`Error getting subnet info for ${netuid}:`, error);
     return null;
   }
 }
-

@@ -13,11 +13,12 @@ import { ApiManager } from './api-manager';
 export async function signAndSend(
   tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
   account: IKeyringPair,
-  _nonce?: Index,
+  _nonce?: Index
 ): Promise<{ hash?: string; error?: string }> {
   return new Promise((resolve) => {
     const apiManager = ApiManager.getInstance();
-    apiManager.getApi()
+    apiManager
+      .getApi()
       .then((api) => {
         const noncePromise =
           _nonce === undefined

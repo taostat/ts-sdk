@@ -1,6 +1,9 @@
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult, IKeyringPair } from '@polkadot/types/types';
-import { validateUnstakeSlippageLimits, StakingSlippageInfo } from '../../helpers/network/get-slippage';
+import {
+  validateUnstakeSlippageLimits,
+  StakingSlippageInfo,
+} from '../../helpers/network/get-slippage';
 import { UnstakeParams, UnstakeResult } from './types';
 
 /**
@@ -20,18 +23,22 @@ export async function unstakeFromHotkey(
     const disableSlippageProtection = params.disableSlippageProtection ?? false;
 
     // Estimate transaction fee using the existing API instance
-    const unstakeFee = await estimateUnstakeFeeWithApi(api, params.hotkey, params.amount, params.netuid);
+    const unstakeFee = await estimateUnstakeFeeWithApi(
+      api,
+      params.hotkey,
+      params.amount,
+      params.netuid
+    );
 
     let slippageInfo: StakingSlippageInfo | undefined;
 
     // Handle slippage protection for subnet unstaking
     if (params.netuid !== 0 && !disableSlippageProtection) {
-
       const slippageValidation = await validateUnstakeSlippageLimits(
         params.amount,
         params.netuid,
         unstakeFee,
-        maxSlippageTolerance,
+        maxSlippageTolerance
       );
 
       slippageInfo = slippageValidation.slippageInfo;
@@ -41,7 +48,7 @@ export async function unstakeFromHotkey(
         return {
           success: false,
           error: `Slippage too high: ${slippageInfo?.slippagePercentage.toFixed(4)}% exceeds tolerance ${maxSlippageTolerance}%. Set disableSlippageProtection: true to proceed anyway.`,
-          slippageInfo
+          slippageInfo,
         };
       }
     }
@@ -65,8 +72,9 @@ export async function unstakeFromHotkey(
 
       if (slippageInfo?.poolData?.subnetPool) {
         const subnetPool = slippageInfo.poolData.subnetPool;
-        const slippageMultiplier = 1 - (maxSlippageTolerance / 100);
-        const limitPriceInTao = subnetPool.price.multipliedBy(slippageMultiplier);
+        const slippageMultiplier = 1 - maxSlippageTolerance / 100;
+        const limitPriceInTao =
+          subnetPool.price.multipliedBy(slippageMultiplier);
         limitPrice = BigInt(Math.floor(limitPriceInTao.toNumber() * 1e9));
       } else {
         // Fallback - this shouldn't happen if slippage validation worked
@@ -84,44 +92,51 @@ export async function unstakeFromHotkey(
 
     // Sign and submit transaction
     return new Promise((resolve) => {
-      extrinsic.signAndSend(keyPair, (result: ISubmittableResult) => {
-        const { status, txHash, dispatchError } = result;
+      extrinsic
+        .signAndSend(keyPair, (result: ISubmittableResult) => {
+          const { status, txHash, dispatchError } = result;
 
-        if (status.isInBlock) {
-          console.log(`Unstake transaction included in block: ${status.asInBlock}`);
-        } else if (status.isFinalized) {
-          if (dispatchError) {
-            let errorMessage = 'Transaction failed';
+          if (status.isInBlock) {
+            console.log(
+              `Unstake transaction included in block: ${status.asInBlock}`
+            );
+          } else if (status.isFinalized) {
+            if (dispatchError) {
+              let errorMessage = 'Transaction failed';
 
-            if (dispatchError.isModule) {
-              const decoded = api.registry.findMetaError(dispatchError.asModule);
-              errorMessage = `${decoded.section}.${decoded.name}: ${decoded.docs.join(' ')}`;
+              if (dispatchError.isModule) {
+                const decoded = api.registry.findMetaError(
+                  dispatchError.asModule
+                );
+                errorMessage = `${decoded.section}.${decoded.name}: ${decoded.docs.join(' ')}`;
+              } else {
+                errorMessage = dispatchError.toString();
+              }
+
+              console.error('Unstake transaction failed:', errorMessage);
+              resolve({
+                success: false,
+                error: errorMessage,
+              });
             } else {
-              errorMessage = dispatchError.toString();
+              console.log(
+                `Unstake transaction finalized: ${status.asFinalized}`
+              );
+              resolve({
+                success: true,
+                txHash: txHash.toString(),
+              });
             }
-
-            console.error('Unstake transaction failed:', errorMessage);
-            resolve({
-              success: false,
-              error: errorMessage,
-            });
-          } else {
-            console.log(`Unstake transaction finalized: ${status.asFinalized}`);
-            resolve({
-              success: true,
-              txHash: txHash.toString(),
-            });
           }
-        }
-      }).catch((error) => {
-        console.error('Error submitting unstake transaction:', error);
-        resolve({
-          success: false,
-          error: error.message,
+        })
+        .catch((error) => {
+          console.error('Error submitting unstake transaction:', error);
+          resolve({
+            success: false,
+            error: error.message,
+          });
         });
-      });
     });
-
   } catch (error) {
     console.error('Error in unstakeFromHotkey:', error);
     return {
@@ -141,7 +156,6 @@ export async function estimateUnstakeFeeWithApi(
   netuid: number
 ): Promise<string> {
   try {
-
     const { getAccounts } = await import('../../helpers/network/get-accounts');
     const { taoToRao, raoToTao } = await import('../../helpers/validation');
 
@@ -161,10 +175,11 @@ export async function estimateUnstakeFeeWithApi(
     const estimatedFee = raoToTao(paymentInfo.partialFee.toString());
 
     return estimatedFee;
-
   } catch (error) {
     console.error('Error estimating unstake fee:', error);
-    throw new Error(`Failed to estimate unstake fee: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to estimate unstake fee: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -176,7 +191,7 @@ export async function unstakeFromRoot(
   api: ApiPromise,
   keyPair: IKeyringPair,
   hotkey: string,
-  amount: string,
+  amount: string
 ): Promise<UnstakeResult> {
   return unstakeFromHotkey(api, keyPair, {
     hotkey,
@@ -197,7 +212,7 @@ export async function unstakeFromSubnet(
   netuid: number,
   amount: string,
   maxSlippageTolerance: number = 0.05, // 5% default
-  allowPartialUnstaking: boolean = false,
+  allowPartialUnstaking: boolean = false
 ): Promise<UnstakeResult> {
   return unstakeFromHotkey(api, keyPair, {
     hotkey,
@@ -206,4 +221,4 @@ export async function unstakeFromSubnet(
     maxSlippageTolerance,
     allowPartialUnstaking,
   });
-} 
+}

@@ -2,7 +2,6 @@ import BigNumber from './bignumber';
 import { decodeNumeric } from './decode-numeric';
 import { getBlockStorage, getStorage } from './get-storage';
 
-
 export async function getFreeBalance(coldkey: string) {
   const codec = await getStorage('account', 'system', [coldkey]);
 
@@ -18,7 +17,7 @@ export async function getFreeBalance(coldkey: string) {
 export async function getAlphaBalance(
   coldkey: string,
   hotkey: string,
-  netuid: number,
+  netuid: number
 ) {
   const [alphaCodec, totalHotkeyAlphaCodec, totalHotkeySharesCodec] =
     await Promise.all([
@@ -55,7 +54,7 @@ export async function getAlphaBalanceAtBlock(
   coldkey: string,
   hotkey: string,
   netuid: number,
-  block: number,
+  block: number
 ) {
   const [alphaCodec, totalHotkeyAlphaCodec, totalHotkeySharesCodec] =
     await Promise.all([

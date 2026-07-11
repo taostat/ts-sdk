@@ -1,0 +1,82 @@
+name: API Drift Check
+
+# Anti-rot gate: weekly, re-fetch the live OpenAPI spec, regenerate, and open a
+# PR if the SDK has drifted from the API. Also runnable on demand.
+on:
+  schedule:
+    - cron: '17 6 * * 1' # Mondays 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Refresh + regenerate. drift:check exits non-zero when the spec or
+      # generated output changed; capture that without failing the whole job so
+      # we can open a PR.
+      - name: Run drift check
+        id: drift
+        run: |
+          set +e
+          OUTPUT=$(node codegen/drift-check.mjs 2>&1)
+          CODE=$?
+          echo "$OUTPUT"
+          echo "drifted=$([ $CODE -ne 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          # stash the human summary for the PR body
+          {
+            echo 'summary<<DRIFT_EOF'
+            echo "$OUTPUT"
+            echo 'DRIFT_EOF'
+          } >> "$GITHUB_OUTPUT"
+          exit 0
+
+      # If drift was detected, make sure the regenerated output still builds and
+      # passes the frozen-contract tests before proposing it.
+      - name: Verify regenerated output
+        if: steps.drift.outputs.drifted == 'true'
+        run: |
+          pnpm run typecheck
+          pnpm run lint
+          pnpm test
+          pnpm run build
+
+      - name: Open drift PR
+        if: steps.drift.outputs.drifted == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automation/api-drift
+          base: auto-update
+          commit-message: 'chore: regenerate SDK from updated OpenAPI spec (API drift)'
+          title: 'chore: API drift — regenerate SDK from updated spec'
+          body: |
+            @dougsillars — the live OpenAPI spec has drifted from the pinned copy.
+            This PR repins `spec/openapi.json` and regenerates `src/generated/`.
+
+            Verified in CI: typecheck, lint, tests (frozen contract), and build all pass.
+            **Review the endpoint changes below** — a REMOVED endpoint may break consumers.
+
+            ```
+            ${{ steps.drift.outputs.summary }}
+            ```
+          reviewers: dougsillars
+          assignees: dougsillars
+          labels: |
+            api-drift
+            automated

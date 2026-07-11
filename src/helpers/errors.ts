@@ -12,8 +12,15 @@ export class BlockchainError extends Error {
  * Error thrown when account has insufficient balance for operation
  */
 export class InsufficientBalanceError extends BlockchainError {
-  constructor(required: string, available: string, account: string, operation: string = 'operation') {
-    super(`Insufficient balance for ${operation} on account ${account}. Required: ${required} TAO (including fees), Available: ${available} TAO`);
+  constructor(
+    required: string,
+    available: string,
+    account: string,
+    operation: string = 'operation'
+  ) {
+    super(
+      `Insufficient balance for ${operation} on account ${account}. Required: ${required} TAO (including fees), Available: ${available} TAO`
+    );
     this.name = 'InsufficientBalanceError';
   }
 }
@@ -42,8 +49,14 @@ export class AccountNotFoundError extends BlockchainError {
  * Error thrown when amount is invalid
  */
 export class InvalidAmountError extends BlockchainError {
-  constructor(amount: string, reason?: string, operation: string = 'operation') {
-    super(`Invalid ${operation} amount: ${amount}${reason ? ` - ${reason}` : ''}`);
+  constructor(
+    amount: string,
+    reason?: string,
+    operation: string = 'operation'
+  ) {
+    super(
+      `Invalid ${operation} amount: ${amount}${reason ? ` - ${reason}` : ''}`
+    );
     this.name = 'InvalidAmountError';
   }
 }
@@ -82,7 +95,7 @@ export class ExistentialDepositError extends BlockchainError {
   ) {
     super(
       `${operation} of ${attemptedAmount} TAO would bring account balance below existential deposit (${existentialDeposit} TAO). ` +
-      `Current balance: ${currentBalance} TAO. Maximum ${operation.toLowerCase()}: ${maxAmount} TAO.`
+        `Current balance: ${currentBalance} TAO. Maximum ${operation.toLowerCase()}: ${maxAmount} TAO.`
     );
     this.name = 'ExistentialDepositError';
   }
@@ -148,4 +161,4 @@ export class TransferError extends BlockchainError {
     super(message);
     this.name = 'TransferError';
   }
-} 
+}
