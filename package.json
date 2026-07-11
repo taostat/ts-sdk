@@ -40,7 +40,9 @@
     "release:dry": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --dry-run",
     "release:patch": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --release-as=patch",
     "release:minor": "release-please release-pr --repo-url=https://github.com/taostat/ts-sdk --package-name=@taostats/sdk --config-file=release-please-config.json --release-as=minor",
-    "prepare": "pnpm run build"
+    "prepare": "pnpm run build",
+    "refresh:spec": "node codegen/refresh-spec.mjs",
+    "drift:check": "node codegen/drift-check.mjs"
   },
   "keywords": [
     "taostats",
