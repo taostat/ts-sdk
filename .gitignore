@@ -77,3 +77,4 @@ typings/
 # OS
 .DS_Store
 Thumbs.db 
+spec/.openapi.patched.json
