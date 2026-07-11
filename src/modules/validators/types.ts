@@ -1,5 +1,9 @@
-import { BaseQueryParams, AddressType, TaoStatsPagination, BaseOrderOptions } from '../../types/common';
-
+import {
+  BaseQueryParams,
+  AddressType,
+  TaoStatsPagination,
+  BaseOrderOptions,
+} from '../../types/common';
 
 // Validator yield data structure
 export interface ValidatorYieldData {
@@ -19,7 +23,22 @@ export interface ValidatorYieldData {
 }
 
 // Order options for validator yield (extends base with additional options)
-export type ValidatorYieldOrder = BaseOrderOptions | 'netuid_asc' | 'netuid_desc' | 'name_asc' | 'name_desc' | 'stake_asc' | 'stake_desc' | 'one_hour_apy_asc' | 'one_hour_apy_desc' | 'one_day_apy_asc' | 'one_day_apy_desc' | 'seven_day_apy_asc' | 'seven_day_apy_desc' | 'thirty_day_apy_asc' | 'thirty_day_apy_desc';
+export type ValidatorYieldOrder =
+  | BaseOrderOptions
+  | 'netuid_asc'
+  | 'netuid_desc'
+  | 'name_asc'
+  | 'name_desc'
+  | 'stake_asc'
+  | 'stake_desc'
+  | 'one_hour_apy_asc'
+  | 'one_hour_apy_desc'
+  | 'one_day_apy_asc'
+  | 'one_day_apy_desc'
+  | 'seven_day_apy_asc'
+  | 'seven_day_apy_desc'
+  | 'thirty_day_apy_asc'
+  | 'thirty_day_apy_desc';
 
 // Query parameters for getYield
 export interface GetYieldParams extends BaseQueryParams {
@@ -81,7 +100,8 @@ export interface AlphaSharesHistoryData {
 }
 
 // Order options for alpha shares history (extends base with netuid options)
-export type AlphaSharesHistoryOrder = BaseOrderOptions | 'netuid_asc' | 'netuid_desc';
+export type AlphaSharesHistoryOrder =
+  BaseOrderOptions | 'netuid_asc' | 'netuid_desc';
 
 // Query parameters for getAlphaSharesHistory
 export interface GetAlphaSharesHistoryParams extends BaseQueryParams {
@@ -102,7 +122,14 @@ export interface AlphaSharesHistoryResponse {
 }
 
 // Order options for alpha shares latest data (extends base with additional options)
-export type AlphaSharesLatestOrder = BaseOrderOptions | 'netuid_asc' | 'netuid_desc' | 'shares_asc' | 'shares_desc' | 'alpha_asc' | 'alpha_desc';
+export type AlphaSharesLatestOrder =
+  | BaseOrderOptions
+  | 'netuid_asc'
+  | 'netuid_desc'
+  | 'shares_asc'
+  | 'shares_desc'
+  | 'alpha_asc'
+  | 'alpha_desc';
 
 // Query parameters for getAlphaSharesLatest
 export interface GetAlphaSharesLatestParams extends BaseQueryParams {
@@ -159,7 +186,8 @@ export interface WeightsHistoryResponse {
 }
 
 // Order options for weights latest (extends base with uid and netuid options)
-export type WeightsLatestOrder = BaseOrderOptions | 'uid_asc' | 'uid_desc' | 'netuid_asc' | 'netuid_desc';
+export type WeightsLatestOrder =
+  BaseOrderOptions | 'uid_asc' | 'uid_desc' | 'netuid_asc' | 'netuid_desc';
 
 // Query parameters for getWeightsLatest
 export interface GetWeightsLatestParams extends BaseQueryParams {
@@ -413,7 +441,8 @@ export interface ParentChildHotkeyRelationsLatestResponse {
 }
 
 // Order options for parent-child hotkey relations history (extends base with subnet_id options)
-export type ParentChildHotkeyRelationsHistoryOrder = BaseOrderOptions | 'subnet_id_asc' | 'subnet_id_desc';
+export type ParentChildHotkeyRelationsHistoryOrder =
+  BaseOrderOptions | 'subnet_id_asc' | 'subnet_id_desc';
 
 // Query parameters for getParentChildHotkeyRelationsHistory
 export interface GetParentChildHotkeyRelationsHistoryParams extends BaseQueryParams {
@@ -443,14 +472,22 @@ export interface SubnetDominance {
 
 // Order options for validator latest (comprehensive ordering)
 export type ValidatorLatestOrder =
-  | 'rank_asc' | 'rank_desc'
-  | 'dominance_asc' | 'dominance_desc'
-  | 'stake_asc' | 'stake_desc'
-  | 'stake_change_asc' | 'stake_change_desc'
-  | 'nominators_asc' | 'nominators_desc'
-  | 'nominators_change_asc' | 'nominators_change_desc'
-  | 'take_asc' | 'take_desc'
-  | 'nominator_return_asc' | 'nominator_return_desc';
+  | 'rank_asc'
+  | 'rank_desc'
+  | 'dominance_asc'
+  | 'dominance_desc'
+  | 'stake_asc'
+  | 'stake_desc'
+  | 'stake_change_asc'
+  | 'stake_change_desc'
+  | 'nominators_asc'
+  | 'nominators_desc'
+  | 'nominators_change_asc'
+  | 'nominators_change_desc'
+  | 'take_asc'
+  | 'take_desc'
+  | 'nominator_return_asc'
+  | 'nominator_return_desc';
 
 // Query parameters for getValidatorLatest
 export interface GetValidatorLatestParams extends BaseQueryParams {
@@ -580,4 +617,3 @@ export interface dTaoValidatorHistoryResponse {
   pagination: TaoStatsPagination;
   data: dTaoValidatorLatestData[];
 }
-

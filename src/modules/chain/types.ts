@@ -1,4 +1,8 @@
-import { BaseQueryParams, AddressType, BaseOrderOptions } from '../../types/common';
+import {
+  BaseQueryParams,
+  AddressType,
+  BaseOrderOptions,
+} from '../../types/common';
 
 // Block data structure returned by the API
 export interface BlockData {
@@ -122,7 +126,7 @@ export interface ExtrinsicData {
 
 // Order options for extrinsics
 export type ExtrinsicOrderOptions =
-  BaseOrderOptions
+  | BaseOrderOptions
   | 'id_asc'
   | 'id_desc'
   | 'success_asc'
@@ -182,7 +186,7 @@ export interface EventData {
 
 // Order options for events
 export type EventOrderOptions =
-  BaseOrderOptions
+  | BaseOrderOptions
   | 'phase_asc'
   | 'phase_desc'
   | 'pallet_asc'
@@ -307,10 +311,7 @@ export type StatsHistoryFrequency = 'by_day' | 'by_block';
 
 // Order options for stats history
 export type StatsHistoryOrderOptions =
-  | 'block_number_asc'
-  | 'block_number_desc'
-  | 'timestamp_asc'
-  | 'timestamp_desc';
+  'block_number_asc' | 'block_number_desc' | 'timestamp_asc' | 'timestamp_desc';
 
 // Runtime version data structure returned by the API
 export interface RuntimeVersionData {
@@ -321,12 +322,7 @@ export interface RuntimeVersionData {
 
 // Order options for runtime version history
 export type RuntimeVersionHistoryOrderOptions =
-  | 'block_number_asc'
-  | 'block_number_desc'
-  | 'timestamp_asc'
-  | 'timestamp_desc';
-
-
+  'block_number_asc' | 'block_number_desc' | 'timestamp_asc' | 'timestamp_desc';
 
 // Proxy call arguments structure (varies by call type)
 export interface ProxyCallArgs {
@@ -355,10 +351,7 @@ export interface ProxyCallData {
 
 // Order options for proxy calls
 export type ProxyCallOrderOptions =
-  | 'block_number_asc'
-  | 'block_number_desc'
-  | 'timestamp_asc'
-  | 'timestamp_desc';
+  'block_number_asc' | 'block_number_desc' | 'timestamp_asc' | 'timestamp_desc';
 
 // Query parameters for getRuntimeVersionHistory
 export interface GetRuntimeVersionHistoryParams extends BaseQueryParams {

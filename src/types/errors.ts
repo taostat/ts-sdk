@@ -9,4 +9,4 @@ export class TaoStatsError extends Error {
     this.statusCode = statusCode;
     this.response = response;
   }
-} 
+}

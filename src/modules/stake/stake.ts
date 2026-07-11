@@ -1,6 +1,9 @@
 import { ApiPromise } from '@polkadot/api';
 import { ISubmittableResult, IKeyringPair } from '@polkadot/types/types';
-import { validateStakeSlippageLimits, StakingSlippageInfo } from '../../helpers/network/get-slippage';
+import {
+  validateStakeSlippageLimits,
+  StakingSlippageInfo,
+} from '../../helpers/network/get-slippage';
 import BigNumber from '../../helpers/network/bignumber';
 import { StakeParams, StakeResult } from './types';
 
@@ -15,28 +18,33 @@ export async function stakeToHotkey(
   params: StakeParams
 ): Promise<StakeResult> {
   try {
-
     // Set defaults
     const maxSlippageTolerance = params.maxSlippageTolerance ?? 0.05; // default: 0.05 for 5%
     const allowPartialStaking = params.allowPartialStaking ?? false;
     const disableSlippageProtection = params.disableSlippageProtection ?? false;
 
     // Estimate transaction fee using the existing API instance
-    const stakeFee = await estimateStakeFeeWithApi(api, params.hotkey, params.amount, params.netuid);
+    const stakeFee = await estimateStakeFeeWithApi(
+      api,
+      params.hotkey,
+      params.amount,
+      params.netuid
+    );
 
     // Calculate actual staked amount (intended amount - transaction fee)
-    const actualStakedAmount = (parseFloat(params.amount) - parseFloat(stakeFee)).toString();
+    const actualStakedAmount = (
+      parseFloat(params.amount) - parseFloat(stakeFee)
+    ).toString();
 
     let slippageInfo: StakingSlippageInfo | undefined;
 
     // Handle slippage protection for subnet staking
     if (params.netuid !== 0 && !disableSlippageProtection) {
-
       const slippageValidation = await validateStakeSlippageLimits(
         params.amount,
         params.netuid,
         stakeFee,
-        maxSlippageTolerance,
+        maxSlippageTolerance
       );
 
       slippageInfo = slippageValidation.slippageInfo;
@@ -47,10 +55,9 @@ export async function stakeToHotkey(
           success: false,
           error: `Slippage too high: ${slippageInfo?.slippagePercentage.toFixed(4)}% exceeds tolerance ${maxSlippageTolerance}%. Set disableSlippageProtection: true to proceed anyway.`,
           stakedAmount: actualStakedAmount,
-          slippageInfo
+          slippageInfo,
         };
       }
-
     }
 
     // Convert amount to RAO (1 TAO = 10^9 RAO)
@@ -74,7 +81,7 @@ export async function stakeToHotkey(
         const subnetPool = slippageInfo.poolData.subnetPool;
         // Alpha per TAO = 1 / (TAO per Alpha)
         const alphaPerTao = new BigNumber(1).dividedBy(subnetPool.price);
-        const slippageMultiplier = 1 - (maxSlippageTolerance / 100);
+        const slippageMultiplier = 1 - maxSlippageTolerance / 100;
         const limitPriceInAlpha = alphaPerTao.multipliedBy(slippageMultiplier);
         limitPrice = BigInt(Math.floor(limitPriceInAlpha.toNumber() * 1e9));
       } else {
@@ -93,47 +100,52 @@ export async function stakeToHotkey(
 
     // Sign and submit transaction
     return new Promise((resolve) => {
-      extrinsic.signAndSend(keyPair, (result: ISubmittableResult) => {
-        const { status, txHash, dispatchError } = result;
+      extrinsic
+        .signAndSend(keyPair, (result: ISubmittableResult) => {
+          const { status, txHash, dispatchError } = result;
 
-        if (status.isInBlock) {
-          console.log(`Stake transaction included in block: ${status.asInBlock}`);
-        } else if (status.isFinalized) {
-          if (dispatchError) {
-            let errorMessage = 'Transaction failed';
+          if (status.isInBlock) {
+            console.log(
+              `Stake transaction included in block: ${status.asInBlock}`
+            );
+          } else if (status.isFinalized) {
+            if (dispatchError) {
+              let errorMessage = 'Transaction failed';
 
-            if (dispatchError.isModule) {
-              const decoded = api.registry.findMetaError(dispatchError.asModule);
-              errorMessage = `${decoded.section}.${decoded.name}: ${decoded.docs.join(' ')}`;
+              if (dispatchError.isModule) {
+                const decoded = api.registry.findMetaError(
+                  dispatchError.asModule
+                );
+                errorMessage = `${decoded.section}.${decoded.name}: ${decoded.docs.join(' ')}`;
+              } else {
+                errorMessage = dispatchError.toString();
+              }
+
+              console.error('Stake transaction failed:', errorMessage);
+              resolve({
+                success: false,
+                error: errorMessage,
+                stakedAmount: actualStakedAmount,
+              });
             } else {
-              errorMessage = dispatchError.toString();
+              console.log(`Stake transaction finalized: ${status.asFinalized}`);
+              resolve({
+                success: true,
+                txHash: txHash.toString(),
+                stakedAmount: actualStakedAmount,
+              });
             }
-
-            console.error('Stake transaction failed:', errorMessage);
-            resolve({
-              success: false,
-              error: errorMessage,
-              stakedAmount: actualStakedAmount,
-            });
-          } else {
-            console.log(`Stake transaction finalized: ${status.asFinalized}`);
-            resolve({
-              success: true,
-              txHash: txHash.toString(),
-              stakedAmount: actualStakedAmount,
-            });
           }
-        }
-      }).catch((error) => {
-        console.error('Error submitting stake transaction:', error);
-        resolve({
-          success: false,
-          error: error.message,
-          stakedAmount: actualStakedAmount,
+        })
+        .catch((error) => {
+          console.error('Error submitting stake transaction:', error);
+          resolve({
+            success: false,
+            error: error.message,
+            stakedAmount: actualStakedAmount,
+          });
         });
-      });
     });
-
   } catch (error) {
     console.error('Error in stakeToHotkey:', error);
     return {
@@ -154,7 +166,6 @@ export async function estimateStakeFeeWithApi(
   netuid: number
 ): Promise<string> {
   try {
-
     const { getAccounts } = await import('../../helpers/network/get-accounts');
     const { taoToRao, raoToTao } = await import('../../helpers/validation');
 
@@ -174,10 +185,11 @@ export async function estimateStakeFeeWithApi(
     const estimatedFee = raoToTao(paymentInfo.partialFee.toString());
 
     return estimatedFee;
-
   } catch (error) {
     console.error('Error estimating stake fee:', error);
-    throw new Error(`Failed to estimate stake fee: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to estimate stake fee: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -189,7 +201,7 @@ export async function stakeToRoot(
   api: ApiPromise,
   keyPair: IKeyringPair,
   hotkey: string,
-  amount: string,
+  amount: string
 ): Promise<StakeResult> {
   return stakeToHotkey(api, keyPair, {
     hotkey,
@@ -210,7 +222,7 @@ export async function stakeToSubnet(
   netuid: number,
   amount: string,
   maxSlippageTolerance: number = 0.05, // 5% default
-  allowPartialStaking: boolean = false,
+  allowPartialStaking: boolean = false
 ): Promise<StakeResult> {
   return stakeToHotkey(api, keyPair, {
     hotkey,

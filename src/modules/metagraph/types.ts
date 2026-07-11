@@ -1,4 +1,9 @@
-import { BaseQueryParams, AddressType, TaoStatsPagination,BaseOrderOptions } from '../../types/common';
+import {
+  BaseQueryParams,
+  AddressType,
+  TaoStatsPagination,
+  BaseOrderOptions,
+} from '../../types/common';
 
 // Miner incentive distribution data structure
 export interface MinerIncentiveDistributionData {
@@ -55,7 +60,6 @@ export interface SubnetColdkeyDistributionResponse {
   data: SubnetColdkeyDistributionData[];
 }
 
-
 // Miner weight data structure
 export interface MinerWeightData {
   block_number: number;
@@ -79,7 +83,6 @@ export interface LatestMinerWeightResponse {
   pagination: TaoStatsPagination;
   data: MinerWeightData[];
 }
-
 
 // Query parameters for getMinerWeightHistory
 export interface GetMinerWeightHistoryParams extends BaseQueryParams {
@@ -114,7 +117,6 @@ export interface NeuronDeregistrationData {
   was_drained: boolean;
 }
 
-
 // Query parameters for getNeuronDeregistrations
 export interface GetNeuronDeregistrationsParams extends BaseQueryParams {
   netuid?: number; // Optional subnet ID
@@ -147,7 +149,8 @@ export interface NeuronRegistrationData {
 }
 
 // Order options for neuron registrations (includes registration cost options)
-export type NeuronRegistrationOrder = BaseOrderOptions | 'registration_cost_asc' | 'registration_cost_desc';
+export type NeuronRegistrationOrder =
+  BaseOrderOptions | 'registration_cost_asc' | 'registration_cost_desc';
 
 // Query parameters for getNeuronRegistrations
 export interface GetNeuronRegistrationsParams extends BaseQueryParams {
@@ -185,7 +188,6 @@ export interface RootSubnetHistoryData {
   subnet_weights: Record<string, string>; // Dynamic subnet ID to weight mapping
 }
 
-
 // Query parameters for getRootSubnetHistory
 export interface GetRootSubnetHistoryParams extends BaseQueryParams {
   hotkey?: string; // Optional validator hotkey
@@ -204,7 +206,8 @@ export interface RootSubnetHistoryResponse {
 }
 
 // Order options for root subnet latest data
-export type RootSubnetOrder = 'uid_asc' | 'uid_desc' | 'stake_asc' | 'stake_desc';
+export type RootSubnetOrder =
+  'uid_asc' | 'uid_desc' | 'stake_asc' | 'stake_desc';
 
 // Query parameters for getRootSubnet (latest data)
 export interface GetRootSubnetParams extends BaseQueryParams {
@@ -261,7 +264,6 @@ export interface MetagraphHistoryData {
   total_alpha_stake: string;
 }
 
-
 // Query parameters for getHistory
 export interface GetHistoryParams extends BaseQueryParams {
   netuid?: number;
@@ -282,7 +284,42 @@ export interface MetagraphHistoryResponse {
 }
 
 // Order options for metagraph latest data
-export type MetagraphLatestOrder = BaseOrderOptions| 'updated_asc' | 'updated_desc' | 'uid_asc' | 'uid_desc' | 'stake_asc' | 'stake_desc' | 'trust_asc' | 'trust_desc' | 'validator_trust_asc' | 'validator_trust_desc' | 'consensus_asc' | 'consensus_desc' | 'incentive_asc' | 'incentive_desc' | 'dividends_asc' | 'dividends_desc' | 'emission_asc' | 'emission_desc' | 'active_asc' | 'active_desc' | 'hotkey_asc' | 'hotkey_desc' | 'coldkey_asc' | 'coldkey_desc' | 'validator_permit_asc' | 'validator_permit_desc' | 'axon_asc' | 'axon_desc' | 'daily_reward_asc' | 'daily_reward_desc' | 'registered_at_asc' | 'registered_at_desc' | 'is_immunity_period_asc' | 'is_immunity_period_desc';
+export type MetagraphLatestOrder =
+  | BaseOrderOptions
+  | 'updated_asc'
+  | 'updated_desc'
+  | 'uid_asc'
+  | 'uid_desc'
+  | 'stake_asc'
+  | 'stake_desc'
+  | 'trust_asc'
+  | 'trust_desc'
+  | 'validator_trust_asc'
+  | 'validator_trust_desc'
+  | 'consensus_asc'
+  | 'consensus_desc'
+  | 'incentive_asc'
+  | 'incentive_desc'
+  | 'dividends_asc'
+  | 'dividends_desc'
+  | 'emission_asc'
+  | 'emission_desc'
+  | 'active_asc'
+  | 'active_desc'
+  | 'hotkey_asc'
+  | 'hotkey_desc'
+  | 'coldkey_asc'
+  | 'coldkey_desc'
+  | 'validator_permit_asc'
+  | 'validator_permit_desc'
+  | 'axon_asc'
+  | 'axon_desc'
+  | 'daily_reward_asc'
+  | 'daily_reward_desc'
+  | 'registered_at_asc'
+  | 'registered_at_desc'
+  | 'is_immunity_period_asc'
+  | 'is_immunity_period_desc';
 
 // Query parameters for getLatest
 export interface GetLatestParams extends BaseQueryParams {

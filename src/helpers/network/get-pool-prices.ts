@@ -21,15 +21,15 @@ export async function getPoolPrice(netuid: number): Promise<PoolPrice> {
   const alpha = new BigNumber(subnetAlphaInCodec?.toJSON() as number);
   const tao = new BigNumber(subnetTaoCodec?.toJSON() as number);
   const alphaEmission = new BigNumber(
-    subnetAlphaInEmissionCodec?.toJSON() as number,
+    subnetAlphaInEmissionCodec?.toJSON() as number
   );
   const taoEmission = new BigNumber(
-    subnetTaoInEmissionCodec?.toJSON() as number,
+    subnetTaoInEmissionCodec?.toJSON() as number
   );
   const price = getPrice(
     netuid,
     tao.plus(taoEmission),
-    alpha.plus(alphaEmission),
+    alpha.plus(alphaEmission)
   );
 
   return {
@@ -76,7 +76,7 @@ export async function getPoolPrices(): Promise<Map<number, PoolPrice>> {
       acc.set(netuid, alphaEmission);
       return acc;
     },
-    new Map<number, BigNumber>(),
+    new Map<number, BigNumber>()
   );
 
   const taoEmissionMap = subnetTaoInEmissionEntries.reduce(
@@ -86,7 +86,7 @@ export async function getPoolPrices(): Promise<Map<number, PoolPrice>> {
       acc.set(netuid, taoEmission);
       return acc;
     },
-    new Map<number, BigNumber>(),
+    new Map<number, BigNumber>()
   );
 
   for (const [netuid, alpha] of alphaMap.entries()) {
@@ -97,7 +97,7 @@ export async function getPoolPrices(): Promise<Map<number, PoolPrice>> {
       const price = getPrice(
         netuid,
         tao.plus(taoEmission),
-        alpha.plus(alphaEmission),
+        alpha.plus(alphaEmission)
       );
       prices.set(netuid, {
         price,

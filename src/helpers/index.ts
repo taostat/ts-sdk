@@ -8,4 +8,4 @@ export * from './constants';
 export * from './validation';
 
 // Error classes
-export * from './errors'; 
+export * from './errors';

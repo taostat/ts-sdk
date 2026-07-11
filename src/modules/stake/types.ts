@@ -1,5 +1,4 @@
-import { StakingSlippageInfo } from "../../helpers/network/get-slippage";
-
+import { StakingSlippageInfo } from '../../helpers/network/get-slippage';
 
 export interface StakeToRootParams {
   hotkey: string;

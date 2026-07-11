@@ -2,4 +2,4 @@
 export { TaoPricesModule } from './tao-prices';
 
 // Export types
-export * from './types'; 
+export * from './types';

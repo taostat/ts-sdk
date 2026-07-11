@@ -20,7 +20,9 @@ export class ApiManager {
   public static getInstance(httpClient?: HttpClient): ApiManager {
     if (!ApiManager.instance) {
       if (!httpClient) {
-        throw new Error('HttpClient required for first ApiManager initialization');
+        throw new Error(
+          'HttpClient required for first ApiManager initialization'
+        );
       }
       ApiManager.instance = new ApiManager(httpClient);
     }
@@ -44,7 +46,10 @@ export class ApiManager {
       try {
         await this.api.disconnect();
       } catch (error) {
-        console.warn('Warning: Error disconnecting previous API connection:', error);
+        console.warn(
+          'Warning: Error disconnecting previous API connection:',
+          error
+        );
       }
       this.api = undefined;
     }
@@ -52,7 +57,10 @@ export class ApiManager {
     if (!this.api) {
       console.log(`Connecting to RPC: ${rpcUrl}`);
       const wsProvider = new WsProvider(rpcUrl);
-      this.api = await ApiPromise.create({ provider: wsProvider, noInitWarn: true });
+      this.api = await ApiPromise.create({
+        provider: wsProvider,
+        noInitWarn: true,
+      });
       this.currentRpcUrl = rpcUrl;
       console.log('Polkadot API Connected successfully');
 
@@ -111,7 +119,7 @@ export class ApiManager {
     const config = (this.httpClient as any).config;
     return {
       seed: config?.seed,
-      privateKey: config?.privateKey
+      privateKey: config?.privateKey,
     };
   }
 
@@ -121,4 +129,4 @@ export class ApiManager {
   public getAccountConfiguration(): { seed?: string; privateKey?: string } {
     return this.getAccountConfig();
   }
-} 
+}

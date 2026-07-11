@@ -12,15 +12,16 @@ export async function estimateTransferFee(
   to: string,
   amount: string,
   api: ApiPromise,
-  from?: string,
+  from?: string
 ): Promise<string> {
-
   // Get source account
   let sourceAccount;
   if (from) {
     const accounts = getAccounts();
     if (accounts.user.address !== from) {
-      throw new Error(`Source address ${from} does not match configured account`);
+      throw new Error(
+        `Source address ${from} does not match configured account`
+      );
     }
     sourceAccount = accounts.user;
   } else {
@@ -48,7 +49,7 @@ export async function estimateTransferCost(
   to: string,
   amount: string,
   api: ApiPromise,
-  from?: string,
+  from?: string
 ): Promise<{
   amount: string;
   fee: string;
@@ -62,7 +63,7 @@ export async function estimateTransferCost(
   return {
     amount,
     fee,
-    total
+    total,
   };
 }
 
@@ -70,9 +71,10 @@ export async function estimateTransferCost(
  * Gets the existential deposit from the network
  */
 export async function getExistentialDeposit(api: ApiPromise): Promise<string> {
-
   if (!api.consts.balances?.existentialDeposit) {
-    throw new Error('Unable to retrieve existential deposit from network constants');
+    throw new Error(
+      'Unable to retrieve existential deposit from network constants'
+    );
   }
 
   const existentialDeposit = api.consts.balances.existentialDeposit;
@@ -85,7 +87,7 @@ export async function getExistentialDeposit(api: ApiPromise): Promise<string> {
 export async function getMaxTransferableAmount(
   to: string,
   api: ApiPromise,
-  from?: string,
+  from?: string
 ): Promise<{
   maxAmount: string;
   currentBalance: string;
@@ -100,7 +102,9 @@ export async function getMaxTransferableAmount(
   if (from) {
     const accounts = getAccounts();
     if (accounts.user.address !== from) {
-      throw new Error(`Source address ${from} does not match configured account`);
+      throw new Error(
+        `Source address ${from} does not match configured account`
+      );
     }
     sourceAccount = accounts.user;
   } else {
@@ -114,21 +118,21 @@ export async function getMaxTransferableAmount(
   // Estimate fee for a small amount to get base fee
   const estimatedFee = await estimateTransferFee(to, '0.001', api, from);
 
-
-
   // Calculate max transferable: balance - fee - existential deposit
   const balanceBN = new BigNumber(currentBalance);
   const feeBN = new BigNumber(estimatedFee);
   const existentialDepositBN = new BigNumber(EXISTENTIAL_DEPOSIT);
 
   const maxTransferableBN = balanceBN.minus(feeBN).minus(existentialDepositBN);
-  const maxAmount = maxTransferableBN.isGreaterThan(0) ? maxTransferableBN.toString() : '0';
+  const maxAmount = maxTransferableBN.isGreaterThan(0)
+    ? maxTransferableBN.toString()
+    : '0';
 
   return {
     maxAmount,
     currentBalance,
     estimatedFee,
-    existentialDeposit: EXISTENTIAL_DEPOSIT
+    existentialDeposit: EXISTENTIAL_DEPOSIT,
   };
 }
 
@@ -140,7 +144,6 @@ export async function estimateAlphaTransferFee(
   api: ApiPromise
 ): Promise<string> {
   try {
-
     const accounts = getAccounts();
     const sourceAccount = accounts.user;
 
@@ -148,11 +151,11 @@ export async function estimateAlphaTransferFee(
     const transferAmountRaw = taoToRao(params.amount);
 
     const transfer = api.tx.subtensorModule.transferStake(
-      params.to_address,           // destination_coldkey
-      params.from_hotkey,          // hotkey
-      params.from_subnet,          // origin_netuid
-      params.to_subnet,            // destination_netuid
-      transferAmountRaw            // alpha_amount in raw units
+      params.to_address, // destination_coldkey
+      params.from_hotkey, // hotkey
+      params.from_subnet, // origin_netuid
+      params.to_subnet, // destination_netuid
+      transferAmountRaw // alpha_amount in raw units
     );
 
     // Get payment info for fee estimation
@@ -160,7 +163,6 @@ export async function estimateAlphaTransferFee(
     const estimatedFee = raoToTao(paymentInfo.partialFee.toString());
 
     return estimatedFee;
-
   } catch (error) {
     console.error('Error estimating Alpha transfer fee:', error);
 

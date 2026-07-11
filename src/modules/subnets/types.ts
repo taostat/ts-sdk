@@ -1,5 +1,9 @@
-import { BaseQueryParams, PaginatedResponse, AddressType, BaseOrderOptions } from '../../types/common';
-
+import {
+  BaseQueryParams,
+  PaginatedResponse,
+  AddressType,
+  BaseOrderOptions,
+} from '../../types/common';
 
 // Main subnet data structure with all hyperparameters
 export interface Subnet {
@@ -90,7 +94,8 @@ export interface HistoricalSubnetPricesQueryParams extends BaseQueryParams {
 }
 
 // Historical subnet prices response
-export type HistoricalSubnetPricesResponse = PaginatedResponse<HistoricalSubnetPrice>;
+export type HistoricalSubnetPricesResponse =
+  PaginatedResponse<HistoricalSubnetPrice>;
 
 // Latest subnet price data (extends historical with fear and greed index)
 export interface LatestSubnetPrice extends HistoricalSubnetPrice {
@@ -100,8 +105,6 @@ export interface LatestSubnetPrice extends HistoricalSubnetPrice {
 
 // Latest subnet prices response
 export type LatestSubnetPricesResponse = PaginatedResponse<LatestSubnetPrice>;
-
-
 
 // Subnet registration data
 export interface SubnetRegistration {
@@ -149,10 +152,12 @@ export interface RegistrationCostHistoryQueryParams extends BaseQueryParams {
 }
 
 // Registration cost history response
-export type RegistrationCostHistoryResponse = PaginatedResponse<RegistrationCostHistory>;
+export type RegistrationCostHistoryResponse =
+  PaginatedResponse<RegistrationCostHistory>;
 
 // Current registration cost response (same structure as history, but returns latest entry)
-export type CurrentRegistrationCostResponse = PaginatedResponse<RegistrationCostHistory>;
+export type CurrentRegistrationCostResponse =
+  PaginatedResponse<RegistrationCostHistory>;
 
 // Subnet owner data
 export interface SubnetOwner {
@@ -223,7 +228,16 @@ export interface SubnetEmissionQueryParams extends BaseQueryParams {
   block_number?: number;
   timestamp_start?: number; // Unix timestamp
   timestamp_end?: number; // Unix timestamp
-  order?: BaseOrderOptions | 'netuid_asc' | 'netuid_desc' | 'tao_in_pool_asc' | 'tao_in_pool_desc' | 'alpha_in_pool_asc' | 'alpha_in_pool_desc' | 'alpha_rewards_asc' | 'alpha_rewards_desc';
+  order?:
+    | BaseOrderOptions
+    | 'netuid_asc'
+    | 'netuid_desc'
+    | 'tao_in_pool_asc'
+    | 'tao_in_pool_desc'
+    | 'alpha_in_pool_asc'
+    | 'alpha_in_pool_desc'
+    | 'alpha_rewards_asc'
+    | 'alpha_rewards_desc';
 }
 
 // Subnet emission response
@@ -257,11 +271,27 @@ export interface SubnetsPoolsHistoryQueryParams extends BaseQueryParams {
   block_end?: number;
   timestamp_start?: number; // Unix timestamp
   timestamp_end?: number; // Unix timestamp
-  order?: BaseOrderOptions | 'netuid_asc' | 'netuid_desc' | 'price_asc' | 'price_desc' | 'market_cap_asc' | 'market_cap_desc' | 'total_tao_asc' | 'total_tao_desc' | 'total_alpha_asc' | 'total_alpha_desc' | 'alpha_in_pool_asc' | 'alpha_in_pool_desc' | 'alpha_staked_asc' | 'alpha_staked_desc';
+  order?:
+    | BaseOrderOptions
+    | 'netuid_asc'
+    | 'netuid_desc'
+    | 'price_asc'
+    | 'price_desc'
+    | 'market_cap_asc'
+    | 'market_cap_desc'
+    | 'total_tao_asc'
+    | 'total_tao_desc'
+    | 'total_alpha_asc'
+    | 'total_alpha_desc'
+    | 'alpha_in_pool_asc'
+    | 'alpha_in_pool_desc'
+    | 'alpha_staked_asc'
+    | 'alpha_staked_desc';
 }
 
 // Subnets pools history response
-export type SubnetsPoolsHistoryResponse = PaginatedResponse<SubnetsPoolsHistory>;
+export type SubnetsPoolsHistoryResponse =
+  PaginatedResponse<SubnetsPoolsHistory>;
 
 // Seven day price data point
 export interface SevenDayPrice {
@@ -315,7 +345,22 @@ export interface CurrentSubnetPools {
 // Query parameters for current subnet pools
 export interface CurrentSubnetPoolsQueryParams extends BaseQueryParams {
   netuid?: number;
-  order?: BaseOrderOptions | 'netuid_asc' | 'netuid_desc' | 'price_asc' | 'price_desc' | 'market_cap_asc' | 'market_cap_desc' | 'total_tao_asc' | 'total_tao_desc' | 'total_alpha_asc' | 'total_alpha_desc' | 'alpha_in_pool_asc' | 'alpha_in_pool_desc' | 'alpha_staked_asc' | 'alpha_staked_desc';
+  order?:
+    | BaseOrderOptions
+    | 'netuid_asc'
+    | 'netuid_desc'
+    | 'price_asc'
+    | 'price_desc'
+    | 'market_cap_asc'
+    | 'market_cap_desc'
+    | 'total_tao_asc'
+    | 'total_tao_desc'
+    | 'total_alpha_asc'
+    | 'total_alpha_desc'
+    | 'alpha_in_pool_asc'
+    | 'alpha_in_pool_desc'
+    | 'alpha_staked_asc'
+    | 'alpha_staked_desc';
 }
 
 // Current subnet pools response

@@ -4,7 +4,6 @@ import { getAccounts } from '../../helpers/network/get-accounts';
 import { ApiManager } from '../../helpers/network/api-manager';
 import { MoveAlphaParams, MoveParams, MoveResult } from './types';
 
-
 /**
  * Move module class that handles stake movement between hotkeys and subnets
  */
@@ -35,4 +34,4 @@ export class MoveModule {
       disableSlippageProtection: params.disableSlippageProtection,
     });
   }
-} 
+}

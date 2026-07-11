@@ -2,7 +2,12 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { TaoStatsConfig } from '../types/config';
 import { TaoStatsError } from '../types/errors';
 import { ApiResponse } from '../types/common';
-import { DEFAULT_BASE_URL, DEFAULT_TIMEOUT, DEFAULT_RETRIES, DEFAULT_RPC_URL } from '../helpers/constants';
+import {
+  DEFAULT_BASE_URL,
+  DEFAULT_TIMEOUT,
+  DEFAULT_RETRIES,
+  DEFAULT_RPC_URL,
+} from '../helpers/constants';
 
 export class HttpClient {
   private client: AxiosInstance;
@@ -25,16 +30,23 @@ export class HttpClient {
       retries: DEFAULT_RETRIES,
       ...config,
       rpcUrl: effectiveRpcUrl,
-      seed: config.seed || (typeof process !== 'undefined' && process.env?.TAO_ACCOUNT_SEED || ''),
-      privateKey: config.privateKey || (typeof process !== 'undefined' && process.env?.TAO_ACCOUNT_PRIVATE_KEY || '')
+      seed:
+        config.seed ||
+        (typeof process !== 'undefined' && process.env?.TAO_ACCOUNT_SEED) ||
+        '',
+      privateKey:
+        config.privateKey ||
+        (typeof process !== 'undefined' &&
+          process.env?.TAO_ACCOUNT_PRIVATE_KEY) ||
+        '',
     };
 
     this.client = axios.create({
       baseURL: this.config.baseUrl,
       timeout: this.config.timeout,
       headers: {
-        'accept': 'application/json',
-        ...(this.config.apiKey && { 'Authorization': this.config.apiKey }),
+        accept: 'application/json',
+        ...(this.config.apiKey && { Authorization: this.config.apiKey }),
         'User-Agent': 'taostats-sdk/1.0.0',
       },
     });
@@ -47,10 +59,14 @@ export class HttpClient {
     this.client.interceptors.request.use(
       (config) => {
         // Checks if API key is required for this request
-        if (!this.config.apiKey && config.url && !config.url.includes('/status/')) {
+        if (
+          !this.config.apiKey &&
+          config.url &&
+          !config.url.includes('/status/')
+        ) {
           throw new TaoStatsError(
             'API key is required for TaoStats API calls. Please provide apiKey in TaoStatsClient config. ' +
-            'Note: API key is not required with custom rpc url for blockchain operations (transfer, stake and unstake modules).'
+              'Note: API key is not required with custom rpc url for blockchain operations (transfer, stake and unstake modules).'
           );
         }
         return config;
@@ -77,7 +93,7 @@ export class HttpClient {
 
           // Exponential backoff
           const delay = Math.pow(2, originalRequest._retryCount) * 1000;
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
 
           return this.client(originalRequest);
         }
@@ -90,7 +106,10 @@ export class HttpClient {
   private handleError(error: any): TaoStatsError {
     if (error.response) {
       // Server responded with error status
-      const message = error.response.data?.message || error.response.data?.error || error.message;
+      const message =
+        error.response.data?.message ||
+        error.response.data?.error ||
+        error.message;
       return new TaoStatsError(
         message,
         error.response.status,
@@ -165,4 +184,4 @@ export class HttpClient {
       data: response.data,
     };
   }
-} 
+}
