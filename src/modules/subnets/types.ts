@@ -1,7 +1,7 @@
-import { BaseQueryParams, PaginatedResponse, AddressType, BaseOrderOptions } from '../../types/common';
+import { BaseQueryParams, PaginatedResponse, V1PaginatedResponse, AddressType, BaseOrderOptions } from '../../types/common';
 
 
-// Main subnet data structure with all hyperparameters
+/** @deprecated OLD API subnet shape. `getSubnets` returns the NEW API join, `V1Subnet`. */
 export interface Subnet {
   block_number: number;
   timestamp: string;
@@ -61,14 +61,124 @@ export interface Subnet {
   subtoken_enabled: boolean;
 }
 
+export interface V1SubnetMetrics {
+  block_number: number;
+  timestamp: string;
+  netuid: number;
+  owner: string | null;
+  owner_hotkey: string | null;
+  registration_block_number: number | null;
+  registration_timestamp: string | null;
+  registration_cost: string | null;
+  neuron_registration_cost: string;
+  active_keys: number;
+  validators: number;
+  active_validators: number;
+  active_dual: number;
+  active_miners: number;
+  neuron_registrations_this_interval: number;
+  last_adjustment_block: number | null;
+  blocks_until_next_adjustment: number;
+  blocks_since_last_epoch: number;
+  blocks_until_next_epoch: number;
+  tao_from_neuron_registration_24_hours: string;
+  incentive_burn: string;
+  recycled_lifetime: string | null;
+  recycled_since_registration: string | null;
+  excess_tao: string | null;
+  emission: string | null;
+  burn_share: string | null;
+  recycle_share: string | null;
+  owner_share: string | null;
+  miner_share: string | null;
+  validator_share: string | null;
+  validator_root_share: string | null;
+  validator_alpha_share: string | null;
+  gamma_share: string | null;
+  emission_weights_changed_at: string | null;
+  emission_weights_changed_at_block: number | null;
+}
+
+export interface V1SubnetHyperparameters {
+  block_number: number;
+  timestamp: string;
+  netuid: number;
+  tempo: number;
+  rho: number;
+  kappa: string;
+  immunity_period: number;
+  activity_cutoff: number;
+  activity_cutoff_factor_milli: number;
+  min_allowed_weights: number;
+  max_weights_limit: number;
+  max_allowed_uids: number;
+  min_allowed_uids: number;
+  max_allowed_validators: number;
+  weights_version: string;
+  weights_rate_limit: string;
+  serving_rate_limit: string;
+  difficulty: string;
+  min_difficulty: string;
+  max_difficulty: string;
+  min_burn: string;
+  max_burn: string;
+  burn_half_life: number;
+  burn_increase_mult: string;
+  adjustment_interval: number;
+  adjustment_alpha: string;
+  target_regs_per_interval: number;
+  max_registrations_per_block: number;
+  registration_allowed: boolean;
+  pow_registration_allowed: boolean;
+  bonds_moving_average: string;
+  bonds_penalty: string;
+  bonds_reset_enabled: boolean;
+  alpha_low: string;
+  alpha_high: string;
+  alpha_sigmoid_steepness: number;
+  liquid_alpha_enabled: boolean;
+  commit_reveal_weights_enabled: boolean;
+  commit_reveal_period: string;
+  scaling_law_power: string;
+  yuma_version: number;
+  epoch_consensus: string;
+  subnet_is_active: boolean;
+  transfers_enabled: boolean;
+  recycle_or_burn: string;
+  root_claim_threshold: string;
+  collateral_lock_share: string;
+  collateral_drain_ratio: string;
+  owner_immune_neuron_limit: number;
+  mechanism_count: number;
+  mechanism_emission_split: unknown[];
+  voting_power_tracking: boolean;
+  voting_power_ema_alpha: string;
+}
+
+/**
+ * Joined metrics and hyperparameters rows from the NEW API. The two source
+ * routes have independent snapshots, so preserve the metrics block/time at the
+ * top level and expose the hyperparameter snapshot metadata separately.
+ * Addresses are SS58 strings.
+ */
+export type V1Subnet = V1SubnetMetrics
+  & Omit<V1SubnetHyperparameters, 'block_number' | 'timestamp' | 'netuid'>
+  & {
+    hyperparameters_block_number: number;
+    hyperparameters_timestamp: string;
+  };
+export type V1SubnetsResponse = V1PaginatedResponse<V1Subnet>;
+
 // Query parameters for subnets endpoint
 export interface SubnetsQueryParams extends BaseQueryParams {
   netuid?: number;
   order?: 'netuid_asc' | 'netuid_desc';
+  order_by?: 'netuid';
+  order_dir?: 'asc' | 'desc';
 }
 
 // Paginated subnets response
-export type SubnetsResponse = PaginatedResponse<Subnet>;
+export type SubnetsResponse = V1SubnetsResponse;
 
 // Historical subnet price data
 export interface HistoricalSubnetPrice {
@@ -86,7 +196,7 @@ export interface HistoricalSubnetPrice {
 // Query parameters for historical subnet prices
 export interface HistoricalSubnetPricesQueryParams extends BaseQueryParams {
   frequency?: 'by_block' | 'by_hour' | 'by_day';
-  order?: 'timestamp_asc' | 'timestamp_desc';
+  order?: BaseOrderOptions;
 }
 
 // Historical subnet prices response
@@ -159,10 +269,10 @@ export interface SubnetOwner {
   block_number: number;
   timestamp: string;
   netuid: number;
-  owner: AddressType;
-  previous_owner: AddressType | null;
+  owner: string;
+  previous_owner: string | null;
   is_coldkey_swap: boolean;
-  pending_owner: AddressType | null;
+  pending_owner: string | null;
   pending_owner_block_number: number | null;
   pending_owner_timestamp: string | null;
 }
@@ -177,11 +287,13 @@ export interface SubnetOwnerQueryParams extends BaseQueryParams {
   block_end?: number;
   timestamp_start?: number; // Unix timestamp
   timestamp_end?: number; // Unix timestamp
-  order?: BaseOrderOptions;
+  order?: 'timestamp_asc' | 'timestamp_desc';
+  order_by?: 'timestamp';
+  order_dir?: 'asc' | 'desc';
 }
 
 // Subnet owner response
-export type SubnetOwnerResponse = PaginatedResponse<SubnetOwner>;
+export type SubnetOwnerResponse = V1PaginatedResponse<SubnetOwner>;
 
 // Subnet identity data
 export interface SubnetIdentity {
