@@ -1,5 +1,5 @@
 import { HttpClient } from '../../client/http-client';
-import { ApiResponse, PaginatedResponse } from '../../types/common';
+import { ApiResponse, PaginatedResponse, V1PaginatedResponse } from '../../types/common';
 import {
   AccountData,
   TransferData,
@@ -37,8 +37,22 @@ export class AccountsModule {
    * @param params - Optional query parameters for filtering transfers
    * @returns Promise with transfer transaction data
    */
-  async getTransfers(params?: GetTransfersParams): Promise<ApiResponse<PaginatedResponse<TransferData>>> {
-    return this.httpClient.get<PaginatedResponse<TransferData>>('/api/transfer/v1', params);
+  async getTransfers(params?: GetTransfersParams): Promise<ApiResponse<V1PaginatedResponse<TransferData>>> {
+    const {
+      order,
+      order_by,
+      order_dir,
+      startDate: _startDate,
+      endDate: _endDate,
+      ...filters
+    } = params ?? {};
+    const orderDir = order_dir ?? (order?.endsWith('_desc') ? 'desc' : order ? 'asc' : undefined);
+    const mappedOrderBy = order_by ?? (order?.startsWith('amount_') ? 'amount' : order ? 'timestamp' : undefined);
+    return this.httpClient.get<V1PaginatedResponse<TransferData>>('/v1/transfers', {
+      ...filters,
+      ...(mappedOrderBy ? { order_by: mappedOrderBy } : {}),
+      ...(orderDir ? { order_dir: orderDir } : {}),
+    });
   }
 
   /**
@@ -50,12 +64,12 @@ export class AccountsModule {
     return this.httpClient.get<PaginatedResponse<OnChainIdentityData>>('/api/identity/latest/v1', params);
   }
 
-   /**
+  /**
    * Get pending coldkey swap information
-   * @returns Promise with pending coldkey swap data including old and new coldkeys, execution details, and predicted execution timestamp
+   * @returns Promise with pending coldkey swap data including SS58 keys, execution details, and predicted execution timestamp
    */
-   async getPendingColdkeySwap(): Promise<ApiResponse<PendingColdkeySwapResponse>> {
-    return this.httpClient.get<PendingColdkeySwapResponse>('/api/pending_coldkey_swap/v1');
+  async getPendingColdkeySwap(): Promise<ApiResponse<PendingColdkeySwapResponse>> {
+    return this.httpClient.get<PendingColdkeySwapResponse>('/v1/accounts/pending-coldkey-swaps');
   }
 
-} 
+}

@@ -1,6 +1,32 @@
 import { HttpClient } from '../../client/http-client';
-import { ApiResponse } from '../../types/common';
-import { SubnetsQueryParams, SubnetsResponse, HistoricalSubnetPricesQueryParams, HistoricalSubnetPricesResponse, LatestSubnetPricesResponse, SubnetRegistrationsQueryParams, SubnetRegistrationsResponse, RegistrationCostHistoryQueryParams, RegistrationCostHistoryResponse, CurrentRegistrationCostResponse, SubnetOwnerQueryParams, SubnetOwnerResponse, SubnetIdentityQueryParams, SubnetIdentityResponse, SubnetEmissionQueryParams, SubnetEmissionResponse, SubnetsPoolsHistoryQueryParams, SubnetsPoolsHistoryResponse, CurrentSubnetPoolsQueryParams, CurrentSubnetPoolsResponse, SubnetHistoryQueryParams, SubnetHistoryResponse } from './types';
+import { ApiResponse, V1PaginatedResponse } from '../../types/common';
+import {
+  SubnetsQueryParams,
+  SubnetsResponse,
+  V1Subnet,
+  V1SubnetHyperparameters,
+  V1SubnetMetrics,
+  HistoricalSubnetPricesQueryParams,
+  HistoricalSubnetPricesResponse,
+  LatestSubnetPricesResponse,
+  SubnetRegistrationsQueryParams,
+  SubnetRegistrationsResponse,
+  RegistrationCostHistoryQueryParams,
+  RegistrationCostHistoryResponse,
+  CurrentRegistrationCostResponse,
+  SubnetOwnerQueryParams,
+  SubnetOwnerResponse,
+  SubnetIdentityQueryParams,
+  SubnetIdentityResponse,
+  SubnetEmissionQueryParams,
+  SubnetEmissionResponse,
+  SubnetsPoolsHistoryQueryParams,
+  SubnetsPoolsHistoryResponse,
+  CurrentSubnetPoolsQueryParams,
+  CurrentSubnetPoolsResponse,
+  SubnetHistoryQueryParams,
+  SubnetHistoryResponse,
+} from './types';
 
 export class SubnetsModule {
   constructor(private httpClient: HttpClient) { }
@@ -11,7 +37,110 @@ export class SubnetsModule {
    * @returns Promise with paginated subnets data
    */
   async getSubnets(params?: SubnetsQueryParams): Promise<ApiResponse<SubnetsResponse>> {
-    return this.httpClient.get<SubnetsResponse>('/api/subnet/latest/v1', params);
+    const { netuid, page, limit, order, order_by, order_dir } = params ?? {};
+    const resolvedOrderBy = order_by ?? (order ? 'netuid' : undefined);
+    const resolvedOrderDir = order_dir ?? (order?.endsWith('_desc') ? 'desc' : order ? 'asc' : undefined);
+    const metricsParams = {
+      ...(netuid !== undefined ? { netuid } : {}),
+      ...(page !== undefined ? { page } : {}),
+      ...(limit !== undefined ? { limit } : {}),
+      ...(resolvedOrderBy ? { order_by: resolvedOrderBy } : {}),
+      ...(resolvedOrderDir ? { order_dir: resolvedOrderDir } : {}),
+    };
+    const hyperparameterParams = {
+      ...(netuid !== undefined ? { netuid } : {}),
+      ...(page !== undefined ? { page } : {}),
+      ...(limit !== undefined ? { limit } : {}),
+    };
+
+    const [metricsResponse, hyperparameters] = await Promise.all([
+      this.httpClient.get<V1PaginatedResponse<V1SubnetMetrics>>(
+        '/v1/subnets/metrics',
+        metricsParams,
+      ),
+      resolvedOrderDir === 'desc' && netuid === undefined
+        ? this.getAllHyperparameters(200)
+        : this.httpClient.get<V1PaginatedResponse<V1SubnetHyperparameters>>(
+          '/v1/subnets/hyperparameters',
+          hyperparameterParams,
+        ).then((response) => {
+          if (!response.data) throw new Error('Taostats API returned no subnet hyperparameters');
+          return response.data;
+        }),
+    ]);
+
+    if (!metricsResponse.data || !Array.isArray(metricsResponse.data.data) || !metricsResponse.data.pagination) {
+      throw new Error('Taostats API returned an invalid subnet metrics response');
+    }
+    if (!Array.isArray(hyperparameters.data)) {
+      throw new Error('Taostats API returned an invalid subnet hyperparameters response');
+    }
+
+    const hyperparametersByNetuid = new Map<number, V1SubnetHyperparameters>();
+    for (const row of hyperparameters.data) {
+      if (hyperparametersByNetuid.has(row.netuid)) {
+        throw new Error(`Taostats API returned duplicate hyperparameters for subnet ${row.netuid}`);
+      }
+      hyperparametersByNetuid.set(row.netuid, row);
+    }
+
+    const joinedRows: V1Subnet[] = metricsResponse.data.data.map((metrics) => {
+      const subnetHyperparameters = hyperparametersByNetuid.get(metrics.netuid);
+      if (!subnetHyperparameters) {
+        throw new Error(`Taostats API returned no hyperparameters for subnet ${metrics.netuid}`);
+      }
+
+      const {
+        block_number: hyperparametersBlockNumber,
+        timestamp: hyperparametersTimestamp,
+        netuid: hyperparametersNetuid,
+        ...hyperparameterFields
+      } = subnetHyperparameters;
+      if (hyperparametersNetuid !== metrics.netuid) {
+        throw new Error(`Taostats API returned mismatched subnet IDs for ${metrics.netuid}`);
+      }
+      return {
+        ...metrics,
+        ...hyperparameterFields,
+        hyperparameters_block_number: hyperparametersBlockNumber,
+        hyperparameters_timestamp: hyperparametersTimestamp,
+      };
+    });
+
+    return {
+      success: metricsResponse.success,
+      data: {
+        data: joinedRows,
+        pagination: metricsResponse.data.pagination,
+      },
+    };
+  }
+
+  private async getAllHyperparameters(limit: number): Promise<V1PaginatedResponse<V1SubnetHyperparameters>> {
+    const data: V1SubnetHyperparameters[] = [];
+    let page = 1;
+    let pagination: V1PaginatedResponse<V1SubnetHyperparameters>['pagination'] | undefined;
+
+    for (let requestCount = 0; requestCount < 5000; requestCount += 1) {
+      const response = await this.httpClient.get<V1PaginatedResponse<V1SubnetHyperparameters>>(
+        '/v1/subnets/hyperparameters',
+        { page, limit },
+      );
+      if (!response.data || !Array.isArray(response.data.data) || !response.data.pagination) {
+        throw new Error('Taostats API returned an invalid subnet hyperparameters response');
+      }
+      data.push(...response.data.data);
+      pagination = response.data.pagination;
+
+      const nextPage = pagination.next_page;
+      if (nextPage === null) return { data, pagination };
+      if (!Number.isSafeInteger(nextPage) || nextPage <= page) {
+        throw new Error('Taostats API returned an invalid hyperparameters next_page');
+      }
+      page = nextPage;
+    }
+
+    throw new Error('Taostats API subnet hyperparameters exceeded the page limit');
   }
 
   /**
@@ -63,7 +192,20 @@ export class SubnetsModule {
    * @returns Promise with paginated subnet owner data
    */
   async getSubnetOwner(params?: SubnetOwnerQueryParams): Promise<ApiResponse<SubnetOwnerResponse>> {
-    return this.httpClient.get<SubnetOwnerResponse>('/api/subnet/owner/v1', params);
+    const {
+      order,
+      order_by,
+      order_dir,
+      startDate: _startDate,
+      endDate: _endDate,
+      ...filters
+    } = params ?? {};
+    const orderDir = order_dir ?? (order?.endsWith('_desc') ? 'desc' : order ? 'asc' : undefined);
+    return this.httpClient.get<SubnetOwnerResponse>('/v1/subnets/owners', {
+      ...filters,
+      ...(order_by || order ? { order_by: order_by ?? 'timestamp' } : {}),
+      ...(orderDir ? { order_dir: orderDir } : {}),
+    });
   }
 
   /**

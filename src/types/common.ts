@@ -16,6 +16,22 @@ export interface PaginatedResponse<T> {
   };
 }
 
+/** Pagination metadata returned by NEW API `/v1` listing routes. */
+export interface V1Pagination {
+  current_page: number;
+  per_page: number;
+  total_items: number;
+  total_pages: number;
+  next_page: number | null;
+  prev_page: number | null;
+}
+
+/** Pagination envelope returned by NEW API `/v1` listing routes. */
+export interface V1PaginatedResponse<T> {
+  data: T[];
+  pagination: V1Pagination;
+}
+
 // Common account information structure used across modules
 export interface AddressType {
   ss58: string;

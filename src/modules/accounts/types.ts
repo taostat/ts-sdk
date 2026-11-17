@@ -1,4 +1,4 @@
-import { BaseQueryParams, AddressType, PaginatedResponse } from '../../types/common';
+import { BaseQueryParams, AddressType, BaseOrderOptions, PaginatedResponse, V1PaginatedResponse } from '../../types/common';
 
 
 // Account data structure (used by getAccount and getAccountHistory)
@@ -28,8 +28,8 @@ export interface AccountData {
 // Transfer data structure
 export interface TransferData {
   id: string; // Format: "finney-5452109-0041"
-  to: AddressType;
-  from: AddressType;
+  to: string;
+  from: string;
   network: string;
   block_number: number;
   timestamp: string;
@@ -92,7 +92,9 @@ export interface GetTransfersParams extends BaseQueryParams {
   block_end?: number; // Block range end
   timestamp_start?: number; // Unix timestamp start (seconds)
   timestamp_end?: number; // Unix timestamp end (seconds)
-  order?: string;
+  order?: BaseOrderOptions | 'amount_asc' | 'amount_desc';
+  order_by?: 'timestamp' | 'amount';
+  order_dir?: 'asc' | 'desc';
 }
 
 // Query parameters for getOnChainIdentity
@@ -102,13 +104,16 @@ export interface GetOnChainIdentityParams extends BaseQueryParams {
 
 // Pending coldkey swap data
 export interface PendingColdkeySwap {
-  old_coldkey: AddressType;
-  new_coldkey: AddressType;
+  old_coldkey: string;
+  new_coldkey: string | null;
+  new_coldkey_hash: string | null;
   block_number: number;
   timestamp: string;
   execution_block_number: number;
   predicted_execution_timestamp: string;
+  disputed: boolean;
+  disputed_block_number: number | null;
 }
 
 // Pending coldkey swap response
-export type PendingColdkeySwapResponse = PaginatedResponse<PendingColdkeySwap>;
+export type PendingColdkeySwapResponse = V1PaginatedResponse<PendingColdkeySwap>;
